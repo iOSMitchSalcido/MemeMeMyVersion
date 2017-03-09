@@ -15,12 +15,26 @@ class MemeEditorViewController: UIViewController {
     @IBOutlet weak var bottomTextField: UITextField!
     
     var cameraBbi: UIBarButtonItem!
-    var albumBbi: UIBarButtonItem!
     var shareBbi: UIBarButtonItem!
+    var clearBbi: UIBarButtonItem!
     
     var defaultImage: UIImage?
     
     var meme: Meme!
+    
+    lazy var availableSourceTypes: [(UIImagePickerControllerSourceType, String)] = {
+        var sources = [(UIImagePickerControllerSourceType, String)]()
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            sources.append((.camera, "Camera"))
+        }
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+            sources.append((.photoLibrary, "Photo Library"))
+        }
+        if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
+            sources.append((.savedPhotosAlbum, "Saved Photos Album"))
+        }
+        return sources
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,26 +53,24 @@ class MemeEditorViewController: UIViewController {
         
         cameraBbi = UIBarButtonItem(barButtonSystemItem: .camera,
                                     target: self,
-                                    action: #selector(getPicture(_:)))
-        albumBbi = UIBarButtonItem(title: "Photos",
-                                   style: .plain,
-                                   target: self,
-                                   action: #selector(getPicture(_:)))
+                                    action: #selector(cameraBbiPressed(_:)))
         shareBbi = UIBarButtonItem(barButtonSystemItem: .action,
                                    target: nil,
                                    action: nil)
+        clearBbi = UIBarButtonItem(barButtonSystemItem: .trash,
+                                   target: self,
+                                   action: #selector(clearBbiPressed(_:)))
         let flexBbi = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
                                       target: nil,
                                       action: nil)
-        toolbarItems = [flexBbi, cameraBbi, flexBbi, albumBbi, flexBbi]
+        toolbarItems = [cameraBbi, flexBbi, clearBbi]
         navigationItem.rightBarButtonItem = shareBbi
         navigationController?.setToolbarHidden(false, animated: false)
         
         defaultImage = UIImage(named: "CreateMeme")
         imageView.image = defaultImage
         
-        cameraBbi.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
-        albumBbi.isEnabled = UIImagePickerController.isSourceTypeAvailable(.photoLibrary)
+        cameraBbi.isEnabled = availableSourceTypes.count > 0
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -82,6 +94,8 @@ class MemeEditorViewController: UIViewController {
             bottomTextField.isHidden = true
             topTextField.isUserInteractionEnabled = false
             bottomTextField.isUserInteractionEnabled = false
+            shareBbi.isEnabled = false
+            clearBbi.isEnabled = false
         }
         else if let meme = meme, imageView.image == meme.memedImage {
            
@@ -89,6 +103,8 @@ class MemeEditorViewController: UIViewController {
             bottomTextField.isHidden = true
             topTextField.isUserInteractionEnabled = false
             bottomTextField.isUserInteractionEnabled = false
+            shareBbi.isEnabled = true
+            clearBbi.isEnabled = true
         }
         else {
             
@@ -96,22 +112,64 @@ class MemeEditorViewController: UIViewController {
             bottomTextField.isHidden = false
             topTextField.isUserInteractionEnabled = true
             bottomTextField.isUserInteractionEnabled = true
+            shareBbi.isEnabled = true
+            clearBbi.isEnabled = true
         }
     }
     
-    func getPicture(_ sender: UIBarButtonItem) {
+    func cameraBbiPressed(_ sender: UIBarButtonItem) {
         
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         
-        if sender == cameraBbi {
-            imagePicker.sourceType = .camera
+        if availableSourceTypes.count > 1 {
+            
+            let alert = UIAlertController(title: "Select Photo Source",
+                                          message: nil,
+                                          preferredStyle: .actionSheet)
+            
+            for source in availableSourceTypes {
+                let action = UIAlertAction(title: source.1,
+                                           style: .default) {
+                                            (action) in
+                                            imagePicker.sourceType = source.0
+                                            self.present(imagePicker, animated: true, completion: nil)
+                }
+                alert.addAction(action)
+            }
+            
+            let cancel = UIAlertAction(title: "Cancel",
+                                       style: .cancel,
+                                       handler: nil)
+            alert.addAction(cancel)
+            
+            present(alert, animated: true, completion: nil)
         }
-        else if sender == albumBbi {
-            imagePicker.sourceType = .photoLibrary
+        else {
+            imagePicker.sourceType = (availableSourceTypes.last?.0)!
+            present(imagePicker, animated: true, completion: nil)
         }
+    }
+    
+    func clearBbiPressed(_ sender: UIBarButtonItem) {
         
-        present(imagePicker, animated: true, completion: nil)
+        let alert = UIAlertController(title: "Delete Picture ?",
+                                      message: nil,
+                                      preferredStyle: .actionSheet)
+        let proceed = UIAlertAction(title: "Delete",
+                                    style: .default) {
+                                        (action) in
+                                        
+                                        self.imageView.image = self.defaultImage
+                                        self.configureMemeView()
+        }
+        let cancel = UIAlertAction(title: "Cancel",
+                                   style: .cancel,
+                                   handler: nil)
+        
+        alert.addAction(proceed)
+        alert.addAction(cancel)
+        present(alert, animated: true, completion: nil)
     }
 }
 
@@ -123,7 +181,6 @@ extension MemeEditorViewController: UIImagePickerControllerDelegate, UINavigatio
         dismiss(animated: true) {
             
             if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
-                print("got an image")
                 self.imageView.image = image
             }
             else {
@@ -135,9 +192,7 @@ extension MemeEditorViewController: UIImagePickerControllerDelegate, UINavigatio
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-     
         dismiss(animated: true) {
-            print("didCancel....")
         }
     }
 }
