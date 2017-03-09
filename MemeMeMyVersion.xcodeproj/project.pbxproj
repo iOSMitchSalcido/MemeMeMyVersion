@@ -8,12 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		866153581E6E593D00E57A97 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866153571E6E593D00E57A97 /* AppDelegate.swift */; };
-		8661535A1E6E593D00E57A97 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866153591E6E593D00E57A97 /* ViewController.swift */; };
+		8661535A1E6E593D00E57A97 /* MemeEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866153591E6E593D00E57A97 /* MemeEditorViewController.swift */; };
 		8661535D1E6E593D00E57A97 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8661535B1E6E593D00E57A97 /* Main.storyboard */; };
 		8661535F1E6E593D00E57A97 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8661535E1E6E593D00E57A97 /* Assets.xcassets */; };
 		866153621E6E593D00E57A97 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 866153601E6E593D00E57A97 /* LaunchScreen.storyboard */; };
 		8661536D1E6E593D00E57A97 /* MemeMeMyVersionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8661536C1E6E593D00E57A97 /* MemeMeMyVersionTests.swift */; };
 		866153781E6E593D00E57A97 /* MemeMeMyVersionUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866153771E6E593D00E57A97 /* MemeMeMyVersionUITests.swift */; };
+		86D0C7F41E6ED9A8009C6AA8 /* Meme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86D0C7F31E6ED9A8009C6AA8 /* Meme.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +37,7 @@
 /* Begin PBXFileReference section */
 		866153541E6E593D00E57A97 /* MemeMeMyVersion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MemeMeMyVersion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		866153571E6E593D00E57A97 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		866153591E6E593D00E57A97 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		866153591E6E593D00E57A97 /* MemeEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemeEditorViewController.swift; sourceTree = "<group>"; };
 		8661535C1E6E593D00E57A97 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8661535E1E6E593D00E57A97 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		866153611E6E593D00E57A97 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -47,6 +48,7 @@
 		866153731E6E593D00E57A97 /* MemeMeMyVersionUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MemeMeMyVersionUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		866153771E6E593D00E57A97 /* MemeMeMyVersionUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemeMeMyVersionUITests.swift; sourceTree = "<group>"; };
 		866153791E6E593D00E57A97 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		86D0C7F31E6ED9A8009C6AA8 /* Meme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Meme.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,7 +100,8 @@
 			isa = PBXGroup;
 			children = (
 				866153571E6E593D00E57A97 /* AppDelegate.swift */,
-				866153591E6E593D00E57A97 /* ViewController.swift */,
+				866153591E6E593D00E57A97 /* MemeEditorViewController.swift */,
+				86D0C7F31E6ED9A8009C6AA8 /* Meme.swift */,
 				8661535B1E6E593D00E57A97 /* Main.storyboard */,
 				8661535E1E6E593D00E57A97 /* Assets.xcassets */,
 				866153601E6E593D00E57A97 /* LaunchScreen.storyboard */,
@@ -193,6 +196,7 @@
 				TargetAttributes = {
 					866153531E6E593D00E57A97 = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = FN5VW63KQX;
 						ProvisioningStyle = Automatic;
 					};
 					866153671E6E593D00E57A97 = {
@@ -259,7 +263,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8661535A1E6E593D00E57A97 /* ViewController.swift in Sources */,
+				86D0C7F41E6ED9A8009C6AA8 /* Meme.swift in Sources */,
+				8661535A1E6E593D00E57A97 /* MemeEditorViewController.swift in Sources */,
 				866153581E6E593D00E57A97 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -410,6 +415,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = FN5VW63KQX;
 				INFOPLIST_FILE = MemeMeMyVersion/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mitchsalcido.MemeMeMyVersion;
@@ -422,6 +428,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = FN5VW63KQX;
 				INFOPLIST_FILE = MemeMeMyVersion/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mitchsalcido.MemeMeMyVersion;
@@ -503,6 +510,7 @@
 				8661537E1E6E593D00E57A97 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		8661537F1E6E593D00E57A97 /* Build configuration list for PBXNativeTarget "MemeMeMyVersionTests" */ = {
 			isa = XCConfigurationList;
@@ -511,6 +519,7 @@
 				866153811E6E593D00E57A97 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		866153821E6E593D00E57A97 /* Build configuration list for PBXNativeTarget "MemeMeMyVersionUITests" */ = {
 			isa = XCConfigurationList;
@@ -519,6 +528,7 @@
 				866153841E6E593D00E57A97 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
