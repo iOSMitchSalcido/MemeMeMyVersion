@@ -16,7 +16,7 @@ class MemeEditorViewController: UIViewController {
     
     var cameraBbi: UIBarButtonItem!
     var shareBbi: UIBarButtonItem!
-    var clearBbi: UIBarButtonItem!
+    var trashBbi: UIBarButtonItem!
     
     var defaultImage: UIImage?
     
@@ -57,13 +57,13 @@ class MemeEditorViewController: UIViewController {
         shareBbi = UIBarButtonItem(barButtonSystemItem: .action,
                                    target: nil,
                                    action: nil)
-        clearBbi = UIBarButtonItem(barButtonSystemItem: .trash,
+        trashBbi = UIBarButtonItem(barButtonSystemItem: .trash,
                                    target: self,
-                                   action: #selector(clearBbiPressed(_:)))
+                                   action: #selector(trashBbiPressed(_:)))
         let flexBbi = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
                                       target: nil,
                                       action: nil)
-        toolbarItems = [cameraBbi, flexBbi, clearBbi]
+        toolbarItems = [cameraBbi, flexBbi, trashBbi]
         navigationItem.rightBarButtonItem = shareBbi
         navigationController?.setToolbarHidden(false, animated: false)
         
@@ -95,7 +95,7 @@ class MemeEditorViewController: UIViewController {
             topTextField.isUserInteractionEnabled = false
             bottomTextField.isUserInteractionEnabled = false
             shareBbi.isEnabled = false
-            clearBbi.isEnabled = false
+            trashBbi.isEnabled = false
         }
         else if let meme = meme, imageView.image == meme.memedImage {
            
@@ -104,7 +104,7 @@ class MemeEditorViewController: UIViewController {
             topTextField.isUserInteractionEnabled = false
             bottomTextField.isUserInteractionEnabled = false
             shareBbi.isEnabled = true
-            clearBbi.isEnabled = true
+            trashBbi.isEnabled = true
         }
         else {
             
@@ -113,7 +113,7 @@ class MemeEditorViewController: UIViewController {
             topTextField.isUserInteractionEnabled = true
             bottomTextField.isUserInteractionEnabled = true
             shareBbi.isEnabled = true
-            clearBbi.isEnabled = true
+            trashBbi.isEnabled = true
         }
     }
     
@@ -151,7 +151,7 @@ class MemeEditorViewController: UIViewController {
         }
     }
     
-    func clearBbiPressed(_ sender: UIBarButtonItem) {
+    func trashBbiPressed(_ sender: UIBarButtonItem) {
         
         let alert = UIAlertController(title: "Delete Picture ?",
                                       message: nil,
