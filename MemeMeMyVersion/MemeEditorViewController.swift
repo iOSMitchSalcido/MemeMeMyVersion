@@ -15,7 +15,6 @@ class MemeEditorViewController: UIViewController {
     @IBOutlet weak var topTextField: UITextField!
     @IBOutlet weak var bottomTextField: UITextField!
     
-    
     // bbi's
     var cameraBbi: UIBarButtonItem!
     var shareBbi: UIBarButtonItem!
@@ -216,7 +215,38 @@ class MemeEditorViewController: UIViewController {
     }
     
     func shareBbiPressed(_ sender: UIBarButtonItem) {
-        print("shareBbiPressed")
+  
+        var items: [Any] = ["Check out my Meme !"]
+        var completion: (() -> Void)? = nil
+        if let meme = meme, imageView.image == meme.memedImage {
+            items.append(meme)
+        }
+        else {
+            let memedImage = screenShot()
+            items.append(memedImage)
+            completion = { () in
+                
+                self.meme = Meme(topText: self.topTextField.text!,
+                            bottomText: self.bottomTextField.text!,
+                            originalImage: self.imageView.image!,
+                            memedImage: memedImage)
+            }
+        }
+        
+        let activityVC = UIActivityViewController(activityItems: items, applicationActivities: nil)
+        present(activityVC, animated: true, completion: completion)
+    }
+    
+    // function to create an image from current view
+    func screenShot() -> UIImage {
+        
+        // Render view to an image
+        UIGraphicsBeginImageContext(self.view.frame.size)
+        view.drawHierarchy(in: self.view.frame, afterScreenUpdates: true)
+        let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        
+        return image
     }
 }
 
