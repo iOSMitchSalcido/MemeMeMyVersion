@@ -134,6 +134,33 @@ class MemeEditorViewController: UIViewController {
         
         // enable camera bbi
         cameraBbi.isEnabled = availableSourceTypes.count > 0
+        
+        // titleView
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 200, height: 35))
+        view.backgroundColor = UIColor.black
+        navigationItem.titleView = view
+    }
+    
+    // used to set titleView in landscape/portrait
+    override func viewWillLayoutSubviews() {
+        
+        // detect orientation changes. Set titleView to correct size
+        let orientation = UIDevice.current.orientation
+        var frame: CGRect = CGRect.zero
+        var image: UIImage!
+        if orientation == .portrait {
+            frame = CGRect(x: 0, y: 0, width: 200, height: 35)
+            image = UIImage(named: "MemeTitleViewPortrait")
+        }
+        else {
+            frame = CGRect(x: 0, y: 0, width: 200, height: 25)
+            image = UIImage(named: "MemeTitleViewLandscape")
+        }
+        
+        // titleView
+        let imageView = UIImageView(frame: frame)
+        imageView.image = image
+        navigationItem.titleView = imageView
     }
     
     override func viewWillAppear(_ animated: Bool) {
