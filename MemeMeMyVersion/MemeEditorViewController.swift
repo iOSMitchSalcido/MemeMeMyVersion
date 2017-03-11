@@ -8,7 +8,7 @@
 /*
  About MemeEditorViewController.swift:
  VC implements a meme generator. Handles functionality for the user to select a pic from available
- iOS device image source (camer, photos lib, etc), and add text at the top and bottom of the field.
+ iOS device image source (camera, photos lib, etc), and add text at the top and bottom of the field.
  
  VC also handles sharing of meme. An ActivityVC can be presented to allow the user to share the meme over
  available services (message, mail, save image, etc)
@@ -46,9 +46,6 @@ class MemeEditorViewController: UIViewController {
         }
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
             sources.append((.photoLibrary, "Photo Library"))
-        }
-        if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
-            sources.append((.savedPhotosAlbum, "Saved Photos Album"))
         }
         
         return sources
@@ -108,7 +105,7 @@ class MemeEditorViewController: UIViewController {
         topTextField.textAlignment = .center
         bottomTextField.textAlignment = .center
         
-        // create bbi's and place on bars
+        // create bbi's and place on toolbar, show toolbar
         cameraBbi = UIBarButtonItem(barButtonSystemItem: .camera,
                                     target: self,
                                     action: #selector(cameraBbiPressed(_:)))
@@ -125,8 +122,11 @@ class MemeEditorViewController: UIViewController {
                                       target: nil,
                                       action: nil)
         toolbarItems = [cameraBbi, flexBbi, fontsBbi, flexBbi, trashBbi]
-        navigationItem.rightBarButtonItem = shareBbi
         navigationController?.setToolbarHidden(false, animated: false)
+
+        // set navbar bbis
+        navigationItem.leftBarButtonItem = editButtonItem
+        navigationItem.rightBarButtonItem = shareBbi
         
         // get default image, place in imageView
         defaultImage = UIImage(named: "CreateMeme")
@@ -214,6 +214,16 @@ class MemeEditorViewController: UIViewController {
         }
     }
     
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        
+        if editing {
+            print("Editing")
+        }
+        else {
+            print("Done editing")
+        }
+    }
     func cameraBbiPressed(_ sender: UIBarButtonItem) {
         
         /*
