@@ -25,6 +25,7 @@ class MemeEditorViewController: UIViewController {
     
     // bbi's
     var cameraBbi: UIBarButtonItem!
+    var fontsBbi: UIBarButtonItem!
     var shareBbi: UIBarButtonItem!
     var trashBbi: UIBarButtonItem!
     
@@ -93,14 +94,17 @@ class MemeEditorViewController: UIViewController {
         return textAttribs
     }()
     
+    // index to track selected font. Initialize at 0, which os default font
+    var fontIndex: Int = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Config textFields, delegate, text, alignment
         topTextField.delegate = self
         bottomTextField.delegate = self
-        topTextField.defaultTextAttributes = textAttributes[0]      // index 0 is default attrib
-        bottomTextField.defaultTextAttributes = textAttributes[0]
+        topTextField.defaultTextAttributes = textAttributes[fontIndex]
+        bottomTextField.defaultTextAttributes = textAttributes[fontIndex]
         topTextField.textAlignment = .center
         bottomTextField.textAlignment = .center
         
@@ -108,6 +112,9 @@ class MemeEditorViewController: UIViewController {
         cameraBbi = UIBarButtonItem(barButtonSystemItem: .camera,
                                     target: self,
                                     action: #selector(cameraBbiPressed(_:)))
+        fontsBbi = UIBarButtonItem(barButtonSystemItem: .play,
+                                   target: self,
+                                   action: #selector(fontsBbiPressed(_:)))
         shareBbi = UIBarButtonItem(barButtonSystemItem: .action,
                                    target: self,
                                    action: #selector(shareBbiPressed(_:)))
@@ -117,7 +124,7 @@ class MemeEditorViewController: UIViewController {
         let flexBbi = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
                                       target: nil,
                                       action: nil)
-        toolbarItems = [cameraBbi, flexBbi, trashBbi]
+        toolbarItems = [cameraBbi, flexBbi, fontsBbi, flexBbi, trashBbi]
         navigationItem.rightBarButtonItem = shareBbi
         navigationController?.setToolbarHidden(false, animated: false)
         
@@ -159,6 +166,7 @@ class MemeEditorViewController: UIViewController {
             bottomTextField.isUserInteractionEnabled = false
             shareBbi.isEnabled = false
             trashBbi.isEnabled = false
+            fontsBbi.isEnabled = false
         }
         else if let meme = meme, imageView.image == meme.memedImage {
            
@@ -169,6 +177,7 @@ class MemeEditorViewController: UIViewController {
             bottomTextField.isUserInteractionEnabled = false
             shareBbi.isEnabled = true
             trashBbi.isEnabled = true
+            fontsBbi.isEnabled = false
         }
         else {
             
@@ -179,6 +188,7 @@ class MemeEditorViewController: UIViewController {
             bottomTextField.isUserInteractionEnabled = true
             shareBbi.isEnabled = true
             trashBbi.isEnabled = true
+            fontsBbi.isEnabled = true
         }
     }
     
@@ -308,6 +318,22 @@ class MemeEditorViewController: UIViewController {
         let activityVC = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
         activityVC.completionWithItemsHandler = activityCompletion
         present(activityVC, animated: true, completion: nil)
+    }
+    
+    // function to cycle thru meme text fonts
+    func fontsBbiPressed(_ sender: UIBarButtonItem) {
+        
+        // advance to next font. Test if exceeded textAttribs count
+        fontIndex += 1
+        if fontIndex >= textAttributes.count {
+            fontIndex = 0
+        }
+        
+        // change textField fonts
+        topTextField.defaultTextAttributes = textAttributes[fontIndex]
+        bottomTextField.defaultTextAttributes = textAttributes[fontIndex]
+        topTextField.textAlignment = .center
+        bottomTextField.textAlignment = .center
     }
     
     // function to create an image from current view
