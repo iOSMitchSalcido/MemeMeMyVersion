@@ -222,7 +222,15 @@ class MemeEditorViewController: UIViewController {
                                             (action) in
                                             
                                             // Completion..set source type and presentVC
+                                            // allow editing if not using camera
                                             imagePicker.sourceType = source.0
+                                            if source.0 == .camera {
+                                                imagePicker.allowsEditing = false
+                                            }
+                                            else {
+                                                imagePicker.allowsEditing = true
+                                            }
+                                            
                                             self.present(imagePicker, animated: true, completion: nil)
                 }
                 alert.addAction(action)
@@ -358,8 +366,11 @@ extension MemeEditorViewController: UIImagePickerControllerDelegate, UINavigatio
         // dismiss imagePickerVC
         dismiss(animated: true) {
             
-            // get image and config bbi's
-            if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            // get image and config bbi's. Use edited image if available
+            if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
+                self.imageView.image = image
+            }
+            else if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
                 self.imageView.image = image
             }
             else {
