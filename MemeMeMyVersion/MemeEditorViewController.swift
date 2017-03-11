@@ -128,9 +128,16 @@ class MemeEditorViewController: UIViewController {
         navigationItem.leftBarButtonItem = editButtonItem
         navigationItem.rightBarButtonItem = shareBbi
         
-        // get default image, place in imageView
+        // get default image
         defaultImage = UIImage(named: "CreateMeme")
-        imageView.image = defaultImage
+        
+        // test for meme, use in imageView, otherwise use default image
+        if meme != nil {
+            imageView.image = meme.memedImage
+        }
+        else {
+            imageView.image = defaultImage
+        }
         
         // enable camera bbi
         cameraBbi.isEnabled = availableSourceTypes.count > 0
