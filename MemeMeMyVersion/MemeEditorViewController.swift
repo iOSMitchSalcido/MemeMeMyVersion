@@ -7,7 +7,7 @@
 //
 /*
  About MemeEditorViewController.swift:
- VC implements a meme generator. Handles functionality for the user to select a pic from and available
+ VC implements a meme generator. Handles functionality for the user to select a pic from available
  iOS device image source (camer, photos lib, etc), and add text at the top and bottom of the field.
  
  VC also handles sharing of meme. An ActivityVC can be presented to allow the user to share the meme over
@@ -94,7 +94,7 @@ class MemeEditorViewController: UIViewController {
         return textAttribs
     }()
     
-    // index to track selected font. Initialize at 0, which os default font
+    // index to track selected font. Initialize at 0, which is default font
     var fontIndex: Int = 0
     
     override func viewDidLoad() {
@@ -134,11 +134,6 @@ class MemeEditorViewController: UIViewController {
         
         // enable camera bbi
         cameraBbi.isEnabled = availableSourceTypes.count > 0
-        
-        // titleView
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: 200, height: 35))
-        view.backgroundColor = UIColor.black
-        navigationItem.titleView = view
     }
     
     // used to set titleView in landscape/portrait
