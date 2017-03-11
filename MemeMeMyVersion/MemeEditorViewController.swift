@@ -91,7 +91,7 @@ class MemeEditorViewController: UIViewController {
         return textAttribs
     }()
     
-    // index to track selected font. Initialize at 0, which is default font
+    // index to track font selection. Initialize at 0, which is default font
     var fontIndex: Int = 0
     
     override func viewDidLoad() {
@@ -337,6 +337,7 @@ class MemeEditorViewController: UIViewController {
             actionTitle = "Restore"
             actionCompletion = {
                 (action) in
+                // action completion restores meme image, text, and font
                 self.topTextField.text = self.meme.topText
                 self.bottomTextField.text = self.meme.bottomText
                 self.topTextField.defaultTextAttributes = self.meme.textAttributes
@@ -352,6 +353,7 @@ class MemeEditorViewController: UIViewController {
             actionTitle = "Delete"
             actionCompletion = {
                 (action) in
+                // action completion sets imageView to default image
                 self.imageView.image = self.defaultImage
                 self.configureMemeView()
             }
@@ -377,7 +379,7 @@ class MemeEditorViewController: UIViewController {
     func shareBbiPressed(_ sender: UIBarButtonItem) {
   
         /*
-         function to share an image or meme. Tests to see if current image is an existing meme. If not,
+         function to share a meme. Tests to see if current image is an existing meme. If not,
          then a new meme is created and image is replaced by memed image
          */
         
