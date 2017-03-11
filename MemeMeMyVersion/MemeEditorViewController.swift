@@ -221,13 +221,15 @@ class MemeEditorViewController: UIViewController {
         super.setEditing(editing, animated: animated)
         
         if editing {
+            
+            // editing a meme. Set bbi's and restore image/text to original meme
             topTextField.isHidden = false
             bottomTextField.isHidden = false
             topTextField.isUserInteractionEnabled = true
             bottomTextField.isUserInteractionEnabled = true
+            trashBbi.isEnabled = false
             cameraBbi.isEnabled = false
             shareBbi.isEnabled = false
-            trashBbi.isEnabled = true
             fontsBbi.isEnabled = true
             
             imageView.image = meme.originalImage
@@ -239,13 +241,14 @@ class MemeEditorViewController: UIViewController {
             topTextField.textAlignment = .center
         }
         else {
+            
+            // done editing meme. Replace meme with new text.
             cameraBbi.isEnabled = true
-            let newMeme = Meme(topText: topTextField.text!,
+            meme = Meme(topText: topTextField.text!,
                                bottomText: bottomTextField.text!,
                                textAttributes: textAttributes[fontIndex],
                                originalImage: meme.originalImage,
                                memedImage: screenShot())
-            meme = newMeme
             imageView.image = meme.memedImage
             configureMemeView()
         }
@@ -391,6 +394,11 @@ class MemeEditorViewController: UIViewController {
     // function to cycle thru meme text fonts
     func fontsBbiPressed(_ sender: UIBarButtonItem) {
         
+        if self.isEditing {
+            // test is view is editing (editing meme). Enable trash to allow undo of edits
+            trashBbi.isEnabled = true
+        }
+        
         // advance to next font. Test if exceeded textAttribs count
         fontIndex += 1
         if fontIndex >= textAttributes.count {
@@ -455,6 +463,14 @@ extension MemeEditorViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+    
+    // begin editing
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if self.isEditing {
+            // test is view is editing (editing meme). Enable trash to allow undo of edits
+            trashBbi.isEnabled = true
+        }
     }
 }
 
