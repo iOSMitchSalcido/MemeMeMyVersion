@@ -318,23 +318,50 @@ class MemeEditorViewController: UIViewController {
     // delete image
     func trashBbiPressed(_ sender: UIBarButtonItem) {
         
-        // Trash. Create alert to delete image
-        let alert = UIAlertController(title: "Delete Picture ?",
+        // Trash. Create alert to delete image or restore meme that is being edited
+        var alertTitle: String!
+        var actionTitle: String!
+        var actionCompletion: ((UIAlertAction) -> Void)?
+        
+        // steer action depending on deleting image or editing a Meme
+        if self.isEditing {
+            // view is editing a Meme. Restore to original Meme
+            alertTitle = "Restore Meme to original ?"
+            actionTitle = "Restore"
+            actionCompletion = {
+                (action) in
+                self.topTextField.text = self.meme.topText
+                self.bottomTextField.text = self.meme.bottomText
+                self.topTextField.defaultTextAttributes = self.meme.textAttributes
+                self.bottomTextField.defaultTextAttributes = self.meme.textAttributes
+                self.topTextField.textAlignment = .center
+                self.bottomTextField.textAlignment = .center
+                self.trashBbi.isEnabled = false
+            }
+        }
+        else {
+            // delete pic
+            alertTitle = "Delete Picture ?"
+            actionTitle = "Delete"
+            actionCompletion = {
+                (action) in
+                self.imageView.image = self.defaultImage
+                self.configureMemeView()
+            }
+        }
+        
+        // create alert, action using above strings and completion
+        let alert = UIAlertController(title: alertTitle,
                                       message: nil,
                                       preferredStyle: .actionSheet)
-        let proceed = UIAlertAction(title: "Delete",
-                                    style: .default) {
-                                        (action) in
-                                        
-                                        // completion, set to defaultImage, config bbi's
-                                        self.imageView.image = self.defaultImage
-                                        self.configureMemeView()
-        }
+        let action = UIAlertAction(title: actionTitle,
+                                   style: .default,
+                                   handler: actionCompletion)
         let cancel = UIAlertAction(title: "Cancel",
                                    style: .cancel,
                                    handler: nil)
         
-        alert.addAction(proceed)
+        alert.addAction(action)
         alert.addAction(cancel)
         present(alert, animated: true, completion: nil)
     }
