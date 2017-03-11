@@ -5,6 +5,14 @@
 //  Created by Online Training on 3/6/17.
 //  Copyright © 2017 Mitch Salcido. All rights reserved.
 //
+/*
+ About MemeEditorViewController.swift:
+ VC implements a meme generator. Handles functionality for the user to select a pic from and available
+ iOS device image source (camer, photos lib, etc), and add text at the top and bottom of the field.
+ 
+ VC also handles sharing of meme. An ActivityVC can be presented to allow the user to share the meme over
+ available services (message, mail, save image, etc)
+ */
 
 import UIKit
 
@@ -29,7 +37,9 @@ class MemeEditorViewController: UIViewController {
     // lazily load available image sources. Return an array of tuple's. SourceType
     // is used to steer image source selection. String is message to show in alertController
     lazy var availableSourceTypes: [(UIImagePickerControllerSourceType, String)] = {
+        
         var sources = [(UIImagePickerControllerSourceType, String)]()
+        
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
             sources.append((.camera, "Camera"))
         }
@@ -39,6 +49,7 @@ class MemeEditorViewController: UIViewController {
         if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
             sources.append((.savedPhotosAlbum, "Saved Photos Album"))
         }
+        
         return sources
     }()
     
