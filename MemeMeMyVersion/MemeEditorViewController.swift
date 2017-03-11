@@ -395,9 +395,13 @@ class MemeEditorViewController: UIViewController {
         }
         else {
             
-            // image is currently new pic. Get screenshot (with text) and append ativityItems array
-            let memedImage = screenShot()
-            activityItems.append(memedImage)
+            // image is currently new pic. Get screenshot (with text), create new meme, append activityItems
+            let newMeme = Meme(topText: self.topTextField.text!,
+                             bottomText: self.bottomTextField.text!,
+                             textAttributes: self.textAttributes[self.fontIndex],
+                             originalImage: self.imageView.image!,
+                             memedImage: screenShot())
+            activityItems.append(newMeme)
             
             // activityVC completion
             activityCompletion = {
@@ -406,16 +410,12 @@ class MemeEditorViewController: UIViewController {
                 if completed {
                     /*
                      successfull share.
-                     Create new meme and set to meme
+                     set meme to newMeme
                     */
-                    self.meme = Meme(topText: self.topTextField.text!,
-                                     bottomText: self.bottomTextField.text!,
-                                     textAttributes: self.textAttributes[self.fontIndex],
-                                     originalImage: self.imageView.image!,
-                                     memedImage: memedImage)
+                    self.meme = newMeme
                     
                     // set imageView to memed image, update bbi enable status
-                    self.imageView.image = memedImage
+                    self.imageView.image = self.meme.memedImage
                     self.configureMemeView()
                 }
             }
