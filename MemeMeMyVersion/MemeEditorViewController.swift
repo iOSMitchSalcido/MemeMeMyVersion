@@ -53,21 +53,54 @@ class MemeEditorViewController: UIViewController {
         return sources
     }()
     
+    // lazily load text attribs for use in meme. Functionality provided for user to cycle thru attribs
+    // to set font
+    lazy var textAttributes: [[String: AnyObject]] = {
+        
+        var textAttribs = [[String: AnyObject]]()
+        
+        // default attrib per course rubric
+        var attribute = [NSStrokeColorAttributeName: UIColor.white,
+                         NSStrokeWidthAttributeName: NSNumber(value: 0.0),
+                         NSForegroundColorAttributeName: UIColor.white,
+                         NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!]
+        textAttribs.append(attribute)
+        
+        attribute = [NSStrokeColorAttributeName: UIColor.black,
+                         NSStrokeWidthAttributeName: NSNumber(value: 0.0),
+                         NSForegroundColorAttributeName: UIColor.black,
+                         NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!]
+        textAttribs.append(attribute)
+        
+        attribute = [NSStrokeColorAttributeName: UIColor.white,
+                         NSStrokeWidthAttributeName: NSNumber(value: 5.0),
+                         NSForegroundColorAttributeName: UIColor.white,
+                         NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!]
+        textAttribs.append(attribute)
+        
+        attribute = [NSStrokeColorAttributeName: UIColor.red,
+                     NSStrokeWidthAttributeName: NSNumber(value: 0.0),
+                     NSForegroundColorAttributeName: UIColor.red,
+                     NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!]
+        textAttribs.append(attribute)
+        
+        attribute = [NSStrokeColorAttributeName: UIColor.red,
+                     NSStrokeWidthAttributeName: NSNumber(value: 5.0),
+                     NSForegroundColorAttributeName: UIColor.red,
+                     NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!]
+        textAttribs.append(attribute)
+        
+        return textAttribs
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        /*
-         Config textFields, delegate, text, alignment
-         */
+        // Config textFields, delegate, text, alignment
         topTextField.delegate = self
         bottomTextField.delegate = self
-        
-        let memeTextAttrib: [String: AnyObject] = [NSStrokeColorAttributeName: UIColor.white,
-                                                   NSStrokeWidthAttributeName: NSNumber(value: 0.0),
-                                                   NSForegroundColorAttributeName: UIColor.white,
-                                                   NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!]
-        topTextField.defaultTextAttributes = memeTextAttrib
-        bottomTextField.defaultTextAttributes = memeTextAttrib
+        topTextField.defaultTextAttributes = textAttributes[0]      // index 0 is default attrib
+        bottomTextField.defaultTextAttributes = textAttributes[0]
         topTextField.textAlignment = .center
         bottomTextField.textAlignment = .center
         
