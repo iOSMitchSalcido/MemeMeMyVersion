@@ -191,6 +191,7 @@ class MemeEditorViewController: UIViewController {
         }
     }
     
+    // delete image
     func trashBbiPressed(_ sender: UIBarButtonItem) {
         
         // Trash. Create alert to delete image
@@ -214,27 +215,55 @@ class MemeEditorViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
+    // share image/meme
     func shareBbiPressed(_ sender: UIBarButtonItem) {
   
-        var items: [Any] = ["Check out my Meme !"]
-        var completion: (() -> Void)? = nil
+        /*
+         function to share an image or meme. Tests to see if current image is an existing meme. If not,
+         then a new meme is created and image is replaced by memed image
+         */
+        
+        // items array for activityItems
+        var activityItems: [Any] = ["Check out my Meme !"]
+        
+        // completion passed into presentVC.
+        var activityCompletion: ((UIActivityType?, Bool, [Any]?, Error?) -> Void)? = nil
+        
         if let meme = meme, imageView.image == meme.memedImage {
-            items.append(meme)
+            // image is currently meme. Simply "re-share" the meme
+            activityItems.append(meme)
         }
         else {
+            
+            // image is currently new pic. Get screenshot (with text) and append ativityItems array
             let memedImage = screenShot()
-            items.append(memedImage)
-            completion = { () in
+            activityItems.append(memedImage)
+            
+            // activityVC completion
+            activityCompletion = {
+                (activityType, completed, returnedItems, activityError) in
                 
-                self.meme = Meme(topText: self.topTextField.text!,
-                            bottomText: self.bottomTextField.text!,
-                            originalImage: self.imageView.image!,
-                            memedImage: memedImage)
+                if completed {
+                    /*
+                     successfull share.
+                     Create new meme and set to meme
+                    */
+                    self.meme = Meme(topText: self.topTextField.text!,
+                                     bottomText: self.bottomTextField.text!,
+                                     originalImage: self.imageView.image!,
+                                     memedImage: memedImage)
+                    
+                    // set imageView to memed image, update bbi enable status
+                    self.imageView.image = memedImage
+                    self.configureMemeView()
+                }
             }
         }
         
-        let activityVC = UIActivityViewController(activityItems: items, applicationActivities: nil)
-        present(activityVC, animated: true, completion: completion)
+        // config and present activityVC
+        let activityVC = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        activityVC.completionWithItemsHandler = activityCompletion
+        present(activityVC, animated: true, completion: nil)
     }
     
     // function to create an image from current view
