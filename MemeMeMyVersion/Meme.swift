@@ -5,11 +5,16 @@
 //  Created by Online Training on 3/7/17.
 //  Copyright © 2017 Mitch Salcido. All rights reserved.
 //
+/*
+ About Meme.swift:
+ Meme data model object. Contains text, images for a meme. Conforms to UIActivityItemSource...can be passed
+ into activityItems argument for UIActivityViewController
+ */
 
 import Foundation
 import UIKit
 
-class Meme: NSObject, UIActivityItemSource {
+class Meme: NSObject {
     
     let topText: String
     let bottomText: String
@@ -24,6 +29,10 @@ class Meme: NSObject, UIActivityItemSource {
         self.originalImage = originalImage
         self.memedImage = memedImage
     }
+}
+
+// extension. ActivityItem data source
+extension Meme: UIActivityItemSource {
     
     func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
         return memedImage
