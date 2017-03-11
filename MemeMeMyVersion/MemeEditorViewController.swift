@@ -233,10 +233,21 @@ class MemeEditorViewController: UIViewController {
             imageView.image = meme.originalImage
             topTextField.text = meme.topText
             bottomTextField.text = meme.bottomText
-            
+            bottomTextField.defaultTextAttributes = meme.textAttributes
+            topTextField.defaultTextAttributes = meme.textAttributes
+            bottomTextField.textAlignment = .center
+            topTextField.textAlignment = .center
         }
         else {
-            print("Done editing")
+            cameraBbi.isEnabled = true
+            let newMeme = Meme(topText: topTextField.text!,
+                               bottomText: bottomTextField.text!,
+                               textAttributes: textAttributes[fontIndex],
+                               originalImage: meme.originalImage,
+                               memedImage: screenShot())
+            meme = newMeme
+            imageView.image = meme.memedImage
+            configureMemeView()
         }
     }
     
