@@ -189,6 +189,7 @@ class MemeEditorViewController: UIViewController {
             shareBbi.isEnabled = false
             trashBbi.isEnabled = false
             fontsBbi.isEnabled = false
+            editButtonItem.isEnabled = false
         }
         else if let meme = meme, imageView.image == meme.memedImage {
            
@@ -200,6 +201,7 @@ class MemeEditorViewController: UIViewController {
             shareBbi.isEnabled = true
             trashBbi.isEnabled = true
             fontsBbi.isEnabled = false
+            editButtonItem.isEnabled = true
         }
         else {
             
@@ -211,6 +213,7 @@ class MemeEditorViewController: UIViewController {
             shareBbi.isEnabled = true
             trashBbi.isEnabled = true
             fontsBbi.isEnabled = true
+            editButtonItem.isEnabled = false
         }
     }
     
@@ -218,12 +221,25 @@ class MemeEditorViewController: UIViewController {
         super.setEditing(editing, animated: animated)
         
         if editing {
-            print("Editing")
+            topTextField.isHidden = false
+            bottomTextField.isHidden = false
+            topTextField.isUserInteractionEnabled = true
+            bottomTextField.isUserInteractionEnabled = true
+            cameraBbi.isEnabled = false
+            shareBbi.isEnabled = false
+            trashBbi.isEnabled = true
+            fontsBbi.isEnabled = true
+            
+            imageView.image = meme.originalImage
+            topTextField.text = meme.topText
+            bottomTextField.text = meme.bottomText
+            
         }
         else {
             print("Done editing")
         }
     }
+    
     func cameraBbiPressed(_ sender: UIBarButtonItem) {
         
         /*
@@ -344,6 +360,7 @@ class MemeEditorViewController: UIViewController {
                     */
                     self.meme = Meme(topText: self.topTextField.text!,
                                      bottomText: self.bottomTextField.text!,
+                                     textAttributes: self.textAttributes[self.fontIndex],
                                      originalImage: self.imageView.image!,
                                      memedImage: memedImage)
                     

@@ -13,12 +13,14 @@ class Meme: NSObject, UIActivityItemSource {
     
     let topText: String
     let bottomText: String
+    let  textAttributes: [String: AnyObject]
     let originalImage: UIImage
     let memedImage: UIImage
     
-    init(topText: String, bottomText: String, originalImage: UIImage, memedImage: UIImage) {
+    init(topText: String, bottomText: String, textAttributes: [String: AnyObject], originalImage: UIImage, memedImage: UIImage) {
         self.topText = topText
         self.bottomText = bottomText
+        self.textAttributes = textAttributes
         self.originalImage = originalImage
         self.memedImage = memedImage
     }
