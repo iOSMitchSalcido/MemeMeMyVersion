@@ -125,7 +125,6 @@ class MemeEditorViewController: UIViewController {
         navigationController?.setToolbarHidden(false, animated: false)
 
         // set navbar bbis
-        navigationItem.leftBarButtonItem = editButtonItem
         navigationItem.rightBarButtonItem = shareBbi
         
         // get default image
@@ -224,43 +223,6 @@ class MemeEditorViewController: UIViewController {
         }
     }
     
-    override func setEditing(_ editing: Bool, animated: Bool) {
-        super.setEditing(editing, animated: animated)
-        
-        if editing {
-            
-            // editing a meme. Set bbi's and restore image/text to original meme
-            topTextField.isHidden = false
-            bottomTextField.isHidden = false
-            topTextField.isUserInteractionEnabled = true
-            bottomTextField.isUserInteractionEnabled = true
-            trashBbi.isEnabled = false
-            cameraBbi.isEnabled = false
-            shareBbi.isEnabled = false
-            fontsBbi.isEnabled = true
-            
-            imageView.image = meme.originalImage
-            topTextField.text = meme.topText
-            bottomTextField.text = meme.bottomText
-            bottomTextField.defaultTextAttributes = meme.textAttributes
-            topTextField.defaultTextAttributes = meme.textAttributes
-            bottomTextField.textAlignment = .center
-            topTextField.textAlignment = .center
-        }
-        else {
-            
-            // done editing meme. Replace meme with new text.
-            cameraBbi.isEnabled = true
-            meme = Meme(topText: topTextField.text!,
-                               bottomText: bottomTextField.text!,
-                               textAttributes: textAttributes[fontIndex],
-                               originalImage: meme.originalImage,
-                               memedImage: screenShot())
-            imageView.image = meme.memedImage
-            configureMemeView()
-        }
-    }
-    
     func cameraBbiPressed(_ sender: UIBarButtonItem) {
         
         /*
@@ -326,46 +288,18 @@ class MemeEditorViewController: UIViewController {
     func trashBbiPressed(_ sender: UIBarButtonItem) {
         
         // Trash. Create alert to delete image or restore meme that is being edited
-        var alertTitle: String!
-        var actionTitle: String!
-        var actionCompletion: ((UIAlertAction) -> Void)?
-        
-        // steer action depending on deleting image or editing a Meme
-        if self.isEditing {
-            // view is editing a Meme. Restore to original Meme
-            alertTitle = "Restore Meme to original ?"
-            actionTitle = "Restore"
-            actionCompletion = {
-                (action) in
-                // action completion restores meme image, text, and font
-                self.topTextField.text = self.meme.topText
-                self.bottomTextField.text = self.meme.bottomText
-                self.topTextField.defaultTextAttributes = self.meme.textAttributes
-                self.bottomTextField.defaultTextAttributes = self.meme.textAttributes
-                self.topTextField.textAlignment = .center
-                self.bottomTextField.textAlignment = .center
-                self.trashBbi.isEnabled = false
-            }
-        }
-        else {
-            // delete pic
-            alertTitle = "Delete Picture ?"
-            actionTitle = "Delete"
-            actionCompletion = {
-                (action) in
-                // action completion sets imageView to default image
-                self.imageView.image = self.defaultImage
-                self.configureMemeView()
-            }
-        }
         
         // create alert, action using above strings and completion
-        let alert = UIAlertController(title: alertTitle,
+        let alert = UIAlertController(title: "Delete Picture ?",
                                       message: nil,
                                       preferredStyle: .actionSheet)
-        let action = UIAlertAction(title: actionTitle,
-                                   style: .default,
-                                   handler: actionCompletion)
+        let action = UIAlertAction(title: "Delete",
+                                   style: .default) {
+                                    (action) in
+                                    // action completion sets imageView to default image
+                                    self.imageView.image = self.defaultImage
+                                    self.configureMemeView()
+        }
         let cancel = UIAlertAction(title: "Cancel",
                                    style: .cancel,
                                    handler: nil)
