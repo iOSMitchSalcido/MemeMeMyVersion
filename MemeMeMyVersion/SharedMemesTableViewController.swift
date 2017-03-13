@@ -5,6 +5,11 @@
 //  Created by Online Training on 3/13/17.
 //  Copyright © 2017 Mitch Salcido. All rights reserved.
 //
+/*
+ About SharedMemesTableViewController.swift
+ TV to handle presentation of shared Meme's. Provides functionality for presenting MemeEditorVC, Deleting
+ and moving Memes in tv
+*/
 
 import UIKit
 
@@ -31,6 +36,14 @@ class SharedMemesTableViewController: UITableViewController {
         // show tabBar, reload table
         tabBarController?.tabBar.isHidden = false
         tableView.reloadData()
+        
+        navigationItem.leftBarButtonItem = editButtonItem
+        editButtonItem.isEnabled = appDelegate.memeStore.count > 0
+    }
+    
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        
     }
 
     // create a new Meme
@@ -68,7 +81,7 @@ class SharedMemesTableViewController: UITableViewController {
     */
 }
 
-// dataSource and Delegate functions for tableView
+// tableView data source functions
 extension SharedMemesTableViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -89,6 +102,23 @@ extension SharedMemesTableViewController {
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        
+        if appDelegate.memeStore.count > 1 {
+            return true
+        }
+        
+        return false
+    }
+}
+
+// tableView delegate functions
+extension SharedMemesTableViewController {
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         // retrieve meme. Invoke MemeEditorVC, set meme, push...need to hide tabBar...
@@ -98,5 +128,19 @@ extension SharedMemesTableViewController {
         navigationItem.titleView = nil
         tabBarController?.tabBar.isHidden = true
         navigationController?.pushViewController(controller, animated: true)
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        
+        if editingStyle == .delete {
+            
+            appDelegate.memeStore.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            
+            if appDelegate.memeStore.count == 0 {
+                setEditing(false, animated: true)
+                editButtonItem.isEnabled = false
+            }
+        }
     }
 }

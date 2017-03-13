@@ -31,7 +31,7 @@ class Meme: NSObject {
     }
 }
 
-// extension. ActivityItem data source
+// extension. conform to ActivityItem data source
 extension Meme: UIActivityItemSource {
     
     func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {

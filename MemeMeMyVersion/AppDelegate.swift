@@ -18,6 +18,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        // debug Memes...
+        for i in 0..<3 {
+            
+            let originalImage = UIImage(named: "CreateMeme")
+            let memedImage = UIImage(named: "CreateMeme")
+            let attribute = [NSStrokeColorAttributeName: UIColor.white,
+                             NSStrokeWidthAttributeName: NSNumber(value: 0.0),
+                             NSForegroundColorAttributeName: UIColor.white,
+                             NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!]
+            let meme = Meme(topText: "Meme #\(i)",
+                bottomText: "This is Meme number \(i)",
+                textAttributes: attribute,
+                originalImage: originalImage!,
+                memedImage: memedImage!)
+            
+            memeStore.append(meme)
+        }
+        
         return true
     }
 
