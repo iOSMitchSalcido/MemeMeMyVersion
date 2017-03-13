@@ -97,51 +97,60 @@ class MemeEditorViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Config textFields, delegate, text, alignment
-        topTextField.delegate = self
-        bottomTextField.delegate = self
-        topTextField.defaultTextAttributes = textAttributes[fontIndex]
-        bottomTextField.defaultTextAttributes = textAttributes[fontIndex]
-        topTextField.textAlignment = .center
-        bottomTextField.textAlignment = .center
-        
-        // create bbi's and place on toolbar, show toolbar
-        cameraBbi = UIBarButtonItem(barButtonSystemItem: .camera,
-                                    target: self,
-                                    action: #selector(cameraBbiPressed(_:)))
-        fontsBbi = UIBarButtonItem(barButtonSystemItem: .play,
-                                   target: self,
-                                   action: #selector(fontsBbiPressed(_:)))
-        shareBbi = UIBarButtonItem(barButtonSystemItem: .action,
-                                   target: self,
-                                   action: #selector(shareBbiPressed(_:)))
-        trashBbi = UIBarButtonItem(barButtonSystemItem: .trash,
-                                   target: self,
-                                   action: #selector(trashBbiPressed(_:)))
-        let flexBbi = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
-                                      target: nil,
-                                      action: nil)
-        toolbarItems = [cameraBbi, flexBbi, fontsBbi, flexBbi, trashBbi]
-        navigationController?.setToolbarHidden(false, animated: false)
+        title = "MemeMe!"
 
-        // set navbar bbis
-        navigationItem.rightBarButtonItem = shareBbi
-        
-        // get default image
-        defaultImage = UIImage(named: "CreateMeme")
-        
-        // test for meme, use in imageView, otherwise use default image
-        if meme != nil {
-            imageView.image = meme.memedImage
+        if meme == nil {
+         
+            // Config textFields, delegate, text, alignment
+            topTextField.delegate = self
+            bottomTextField.delegate = self
+            topTextField.defaultTextAttributes = textAttributes[fontIndex]
+            bottomTextField.defaultTextAttributes = textAttributes[fontIndex]
+            topTextField.textAlignment = .center
+            bottomTextField.textAlignment = .center
+            
+            // create bbi's and place on toolbar, show toolbar
+            cameraBbi = UIBarButtonItem(barButtonSystemItem: .camera,
+                                        target: self,
+                                        action: #selector(cameraBbiPressed(_:)))
+            fontsBbi = UIBarButtonItem(barButtonSystemItem: .play,
+                                       target: self,
+                                       action: #selector(fontsBbiPressed(_:)))
+            shareBbi = UIBarButtonItem(barButtonSystemItem: .action,
+                                       target: self,
+                                       action: #selector(shareBbiPressed(_:)))
+            trashBbi = UIBarButtonItem(barButtonSystemItem: .trash,
+                                       target: self,
+                                       action: #selector(trashBbiPressed(_:)))
+            let flexBbi = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
+                                          target: nil,
+                                          action: nil)
+            toolbarItems = [cameraBbi, flexBbi, fontsBbi, flexBbi, trashBbi]
+            navigationController?.setToolbarHidden(false, animated: false)
+            
+            // set navbar bbis
+            navigationItem.rightBarButtonItem = shareBbi
+            
+            // cancel bbi
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
+                                                                target: self,
+                                                                action: #selector(dismissVC))
+            
+            // get default image
+            defaultImage = UIImage(named: "CreateMeme")
+            imageView.image = defaultImage
+            
+            // enable camera bbi
+            cameraBbi.isEnabled = availableSourceTypes.count > 0
         }
         else {
-            imageView.image = defaultImage
+            imageView.image = meme.memedImage
         }
         
-        // enable camera bbi
-        cameraBbi.isEnabled = availableSourceTypes.count > 0
+        configureMemeView()
     }
     
+    /*
     // used to set titleView in landscape/portrait
     override func viewWillLayoutSubviews() {
         
@@ -163,6 +172,7 @@ class MemeEditorViewController: UIViewController {
         imageView.image = image
         navigationItem.titleView = imageView
     }
+    */
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -195,19 +205,14 @@ class MemeEditorViewController: UIViewController {
             shareBbi.isEnabled = false
             trashBbi.isEnabled = false
             fontsBbi.isEnabled = false
-            editButtonItem.isEnabled = false
         }
-        else if let meme = meme, imageView.image == meme.memedImage {
+        else if meme != nil {
            
-            // meme image is showing. Disable/hide textFields. Enable share/trash bbi's
+            // meme image is showing. Disable/hide textFields
             topTextField.isHidden = true
             bottomTextField.isHidden = true
             topTextField.isUserInteractionEnabled = false
             bottomTextField.isUserInteractionEnabled = false
-            shareBbi.isEnabled = true
-            trashBbi.isEnabled = true
-            fontsBbi.isEnabled = false
-            editButtonItem.isEnabled = true
         }
         else {
             
@@ -219,7 +224,6 @@ class MemeEditorViewController: UIViewController {
             shareBbi.isEnabled = true
             trashBbi.isEnabled = true
             fontsBbi.isEnabled = true
-            editButtonItem.isEnabled = false
         }
     }
     
@@ -392,6 +396,11 @@ class MemeEditorViewController: UIViewController {
         UIGraphicsEndImageContext()
         
         return image
+    }
+    
+    // function to dismiss view
+    func dismissVC() {
+        dismiss(animated: true, completion:nil)
     }
 }
 
