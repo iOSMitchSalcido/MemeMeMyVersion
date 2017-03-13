@@ -119,6 +119,7 @@ extension SharedMemesTableViewController {
 // tableView delegate functions
 extension SharedMemesTableViewController {
     
+    // handle invoking MemeEditorVC to view Meme
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         // retrieve meme. Invoke MemeEditorVC, set meme, push...need to hide tabBar...
@@ -130,17 +131,29 @@ extension SharedMemesTableViewController {
         navigationController?.pushViewController(controller, animated: true)
     }
     
+    // handle deleting Meme
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         
         if editingStyle == .delete {
             
+            // delete meme from store and update tv
             appDelegate.memeStore.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             
+            // test for no Memes..take out of editing mode and disable editDoneItem
             if appDelegate.memeStore.count == 0 {
                 setEditing(false, animated: true)
                 editButtonItem.isEnabled = false
             }
         }
     }
+    
+    // handle moving Meme's
+    override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        
+        // swap Memes
+        let meme = appDelegate.memeStore.remove(at: sourceIndexPath.row)
+        appDelegate.memeStore.insert(meme, at: destinationIndexPath.row)
+    }
 }
+
