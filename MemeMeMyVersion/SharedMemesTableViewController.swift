@@ -10,34 +10,16 @@ import UIKit
 
 class SharedMemesTableViewController: UITableViewController {
 
-    // for debug.. create five memes and put in table
-    lazy var testMemes: [Meme]  = {
-        
-        var memes = [Meme]()
-        
-        for i in 0..<5 {
-            let originalImage = UIImage(named: "CreateMeme")
-            let memedImage = UIImage(named: "CreateMeme")
-            let attribute = [NSStrokeColorAttributeName: UIColor.white,
-                             NSStrokeWidthAttributeName: NSNumber(value: 0.0),
-                             NSForegroundColorAttributeName: UIColor.white,
-                             NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!]
-            let meme = Meme(topText: "Meme #\(i)",
-                            bottomText: "I'm Meme #\(i) in the list of memes",
-                            textAttributes: attribute,
-                            originalImage: originalImage!,
-                            memedImage: memedImage!)
-            memes.append(meme)
-        }
-        
-        return memes
-    }()
+    // ref to app delegate..Meme store is defined in appDelegate
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // view title
         title = "MemeMe!"
         
+        // "+" button to create new Meme
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
                                                             target: self,
                                                             action: #selector(createNewMeme))
@@ -46,11 +28,15 @@ class SharedMemesTableViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // show tabBar, reload table
         tabBarController?.tabBar.isHidden = false
+        tableView.reloadData()
     }
 
+    // create a new Meme
     func createNewMeme() {
     
+        // invoke MemeEditorVC in a navController, present
         let controller = storyboard?.instantiateViewController(withIdentifier: "MemeEditorViewController") as! MemeEditorViewController
         let nc = UINavigationController(rootViewController: controller)
         present(nc, animated: true, completion: nil)
@@ -82,18 +68,20 @@ class SharedMemesTableViewController: UITableViewController {
     */
 }
 
+// dataSource and Delegate functions for tableView
 extension SharedMemesTableViewController {
     
-    // MARK: - Table view data source
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return testMemes.count
+        // count of rows in tv
+        return appDelegate.memeStore.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        // retrieve cell, Meme. Set cell text and image
         let cell = tableView.dequeueReusableCell(withIdentifier: "MemeTableCellID")!
-        let meme = testMemes[indexPath.row]
+        let meme = appDelegate.memeStore[indexPath.row]
         cell.textLabel?.text = meme.topText
         cell.detailTextLabel?.text = meme.bottomText
         cell.imageView?.image = meme.memedImage
@@ -101,10 +89,10 @@ extension SharedMemesTableViewController {
         return cell
     }
     
-    // MARK: - Table view delegate functions
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let meme = testMemes[indexPath.row]
+        // retrieve meme. Invoke MemeEditorVC, set meme, push...need to hide tabBar...
+        let meme = appDelegate.memeStore[indexPath.row]
         let controller = storyboard?.instantiateViewController(withIdentifier: "MemeEditorViewController") as! MemeEditorViewController
         controller.meme = meme
         navigationItem.titleView = nil

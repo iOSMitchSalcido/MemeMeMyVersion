@@ -9,15 +9,20 @@
  About MemeEditorViewController.swift:
  VC implements a meme generator. Handles functionality for the user to select a pic from available
  iOS device image source (camera, photos lib, etc), and add text at the top and bottom of the field.
+ Handles sharing of meme. An ActivityVC can be presented to allow the user to share the meme over
+ available services (message, mail, save image, etc).
  
- VC also handles sharing of meme. An ActivityVC can be presented to allow the user to share the meme over
- available services (message, mail, save image, etc)
+ VC is also a Meme viewer. If meme object is non-nil, then camera/buttons related to creating/sharing
+ Meme are not implemented
  */
 
 import UIKit
 
 class MemeEditorViewController: UIViewController {
 
+    // ref to app delegate..Meme store is defined in appDelegate
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    
     // ref to view objects
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var topTextField: UITextField!
@@ -32,7 +37,7 @@ class MemeEditorViewController: UIViewController {
     // default image..ref maintained to steer view configuration
     var defaultImage: UIImage?
     
-    // ref to a Meme
+    // ref to a Meme. If nil, then create Meme, otherwise view the Meme
     var meme: Meme!
     
     // lazily load available image sources. Return an array of tuple's. SourceType
@@ -97,10 +102,20 @@ class MemeEditorViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // view title
         title = "MemeMe!"
 
+        // trash bbi. Used to delete pic or delete Meme
+        trashBbi = UIBarButtonItem(barButtonSystemItem: .trash,
+                                   target: self,
+                                   action: #selector(trashBbiPressed(_:)))
+        
         if meme == nil {
-         
+            /*
+             nil meme
+             VC implements controls and present view to create and share meme
+             */
+            
             // Config textFields, delegate, text, alignment
             topTextField.delegate = self
             bottomTextField.delegate = self
@@ -119,9 +134,7 @@ class MemeEditorViewController: UIViewController {
             shareBbi = UIBarButtonItem(barButtonSystemItem: .action,
                                        target: self,
                                        action: #selector(shareBbiPressed(_:)))
-            trashBbi = UIBarButtonItem(barButtonSystemItem: .trash,
-                                       target: self,
-                                       action: #selector(trashBbiPressed(_:)))
+
             let flexBbi = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
                                           target: nil,
                                           action: nil)
@@ -144,35 +157,41 @@ class MemeEditorViewController: UIViewController {
             cameraBbi.isEnabled = availableSourceTypes.count > 0
         }
         else {
+            
+            /*
+             non-nil meme
+             VC shows a meme with ability to delete
+             */
+            
+            navigationItem.rightBarButtonItem = trashBbi
             imageView.image = meme.memedImage
         }
-        
-        configureMemeView()
     }
     
     /*
-    // used to set titleView in landscape/portrait
-    override func viewWillLayoutSubviews() {
-        
-        // detect orientation changes. Set titleView to correct size
-        let orientation = UIDevice.current.orientation
-        var frame: CGRect = CGRect.zero
-        var image: UIImage!
-        if orientation == .portrait {
-            frame = CGRect(x: 0, y: 0, width: 200, height: 35)
-            image = UIImage(named: "MemeTitleViewPortrait")
-        }
-        else {
-            frame = CGRect(x: 0, y: 0, width: 200, height: 25)
-            image = UIImage(named: "MemeTitleViewLandscape")
-        }
-        
-        // titleView
-        let imageView = UIImageView(frame: frame)
-        imageView.image = image
-        navigationItem.titleView = imageView
-    }
-    */
+     // TODO: !! Problems when pushing..abruptly shifts on an odd way...need to investigate
+     // used to set titleView in landscape/portrait
+     override func viewWillLayoutSubviews() {
+     
+     // detect orientation changes. Set titleView to correct size
+     let orientation = UIDevice.current.orientation
+     var frame: CGRect = CGRect.zero
+     var image: UIImage!
+     if orientation == .portrait {
+     frame = CGRect(x: 0, y: 0, width: 200, height: 35)
+     image = UIImage(named: "MemeTitleViewPortrait")
+     }
+     else {
+     frame = CGRect(x: 0, y: 0, width: 200, height: 25)
+     image = UIImage(named: "MemeTitleViewLandscape")
+     }
+     
+     // titleView
+     let imageView = UIImageView(frame: frame)
+     imageView.image = image
+     navigationItem.titleView = imageView
+     }
+     */
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -197,7 +216,8 @@ class MemeEditorViewController: UIViewController {
          */
         if imageView.image == defaultImage {
             
-            // default image is showing. disable/hide textFields. Disable share/trash bbi's
+            // default image is showing in preparation for creating a Meme.
+            // disable/hide textFields. Disable share/trash bbi's
             topTextField.isHidden = true
             bottomTextField.isHidden = true
             topTextField.isUserInteractionEnabled = false
@@ -216,7 +236,8 @@ class MemeEditorViewController: UIViewController {
         }
         else {
             
-            // picture from camera or photo's album is showning. Enable text editing, sharing, and trash
+            // picture selected from camera or photo's album is showning.
+            // Enable text editing, sharing, and trash
             topTextField.isHidden = false
             bottomTextField.isHidden = false
             topTextField.isUserInteractionEnabled = true
@@ -230,8 +251,8 @@ class MemeEditorViewController: UIViewController {
     func cameraBbiPressed(_ sender: UIBarButtonItem) {
         
         /*
-         Function to invoke imagePickerVC. tests availableSources array, and if more then one source
-         type is available (camera + photo's library, for example), then an alertVC (action) is presented
+         Function to invoke imagePickerVC. tests availableSources array, and if more than one source
+         type is available (camera + photo's library, for example) an alertVC (action) is presented
          with selection of sources. If only one source type is available, then simply invoke imagePickerVC
          using that source
         */
@@ -291,19 +312,42 @@ class MemeEditorViewController: UIViewController {
     // delete image
     func trashBbiPressed(_ sender: UIBarButtonItem) {
         
-        // Trash. Create alert to delete image or restore meme that is being edited
+        // Trash. Create alert to delete image or meme that is being edited
         
+        // title for alert, action completion
+        var alertTitle: String!
+        var actionCompletion: ((UIAlertAction) -> Void)? = nil
+
+        // steer alertTitle/actionCompletion based on deleting meme or pic
+        if meme == nil {
+            // deleting pic in meme editor
+            alertTitle = "Delete Pic ?"
+            actionCompletion = {
+                (action) in
+                self.imageView.image = self.defaultImage
+                self.configureMemeView()
+            }
+        }
+        else {
+            // deleting meme
+            alertTitle = "Delete Meme ?"
+            actionCompletion = {
+                (action) in
+                
+                let index = self.appDelegate.memeStore.index(of: self.meme)
+                self.appDelegate.memeStore.remove(at: index!)
+                let _ = self.navigationController?.popViewController(animated: true)
+            }
+        }
+
         // create alert, action using above strings and completion
-        let alert = UIAlertController(title: "Delete Picture ?",
+        let alert = UIAlertController(title: alertTitle,
                                       message: nil,
                                       preferredStyle: .actionSheet)
         let action = UIAlertAction(title: "Delete",
-                                   style: .default) {
-                                    (action) in
-                                    // action completion sets imageView to default image
-                                    self.imageView.image = self.defaultImage
-                                    self.configureMemeView()
-        }
+                                   style: .default,
+                                   handler: actionCompletion)
+        
         let cancel = UIAlertAction(title: "Cancel",
                                    style: .cancel,
                                    handler: nil)
@@ -313,59 +357,34 @@ class MemeEditorViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    // share image/meme
+    // share Meme
     func shareBbiPressed(_ sender: UIBarButtonItem) {
   
-        /*
-         function to share a meme. Tests to see if current image is an existing meme. If not,
-         then a new meme is created and image is replaced by memed image
-         */
+        // create a new Meme
+        let newMeme = Meme(topText: self.topTextField.text!,
+                           bottomText: self.bottomTextField.text!,
+                           textAttributes: self.textAttributes[self.fontIndex],
+                           originalImage: self.imageView.image!,
+                           memedImage: screenShot())
         
-        // items array for activityItems
-        var activityItems: [Any] = ["Check out my Meme !"]
-        
-        // completion passed into presentVC.
-        var activityCompletion: ((UIActivityType?, Bool, [Any]?, Error?) -> Void)? = nil
-        
-        if let meme = meme, imageView.image == meme.memedImage {
-            // image is currently meme. Simply "re-share" the meme
-            activityItems.append(meme)
-        }
-        else {
+        // config and present activityVC
+        let activityVC = UIActivityViewController(activityItems: ["Check Out My Meme !", newMeme],
+                                                  applicationActivities: nil)
+        activityVC.completionWithItemsHandler = {
+            (activityType, completed, returnedItems, activityError) in
             
-            // image is currently new pic. Get screenshot (with text), create new meme, append activityItems
-            let newMeme = Meme(topText: self.topTextField.text!,
-                             bottomText: self.bottomTextField.text!,
-                             textAttributes: self.textAttributes[self.fontIndex],
-                             originalImage: self.imageView.image!,
-                             memedImage: screenShot())
-            activityItems.append(newMeme)
-            
-            // activityVC completion
-            activityCompletion = {
-                (activityType, completed, returnedItems, activityError) in
-                
-                if completed {
-                    /*
-                     successfull share.
-                     set meme to newMeme
-                    */
-                    self.meme = newMeme
-                    
-                    // set imageView to memed image, update bbi enable status
-                    self.imageView.image = self.meme.memedImage
-                    self.configureMemeView()
-                }
+            if completed {
+
+                 //successfull share. Save to store and dismiss
+                self.appDelegate.memeStore.insert(newMeme, at: 0)
+                self.dismissVC()
             }
         }
         
-        // config and present activityVC
-        let activityVC = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-        activityVC.completionWithItemsHandler = activityCompletion
         present(activityVC, animated: true, completion: nil)
     }
     
-    // function to cycle thru meme text fonts
+    // function to cycle thru meme text fonts..used for selecting font when editing Meme
     func fontsBbiPressed(_ sender: UIBarButtonItem) {
         
         if self.isEditing {
@@ -430,8 +449,7 @@ extension MemeEditorViewController: UIImagePickerControllerDelegate, UINavigatio
     
     // cancel, do nothing
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        dismiss(animated: true) {
-        }
+        self.dismissVC()
     }
 }
 
@@ -442,14 +460,6 @@ extension MemeEditorViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
-    }
-    
-    // begin editing
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        if self.isEditing {
-            // test is view is editing (editing meme). Enable trash to allow undo of edits
-            trashBbi.isEnabled = true
-        }
     }
 }
 
