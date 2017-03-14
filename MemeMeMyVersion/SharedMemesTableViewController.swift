@@ -22,7 +22,7 @@ class SharedMemesTableViewController: UITableViewController {
         super.viewDidLoad()
         
         // view title
-        title = "MemeMe!"
+        navigationItem.titleView = titleViewForOrientation(UIDevice.current.orientation)
         
         // "+" button to create new Meme
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
@@ -37,13 +37,12 @@ class SharedMemesTableViewController: UITableViewController {
         tabBarController?.tabBar.isHidden = false
         tableView.reloadData()
         
-        navigationItem.leftBarButtonItem = editButtonItem
+        //navigationItem.leftBarButtonItem = editButtonItem
         editButtonItem.isEnabled = appDelegate.memeStore.count > 0
     }
     
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
-        
     }
 
     // create a new Meme
@@ -54,31 +53,6 @@ class SharedMemesTableViewController: UITableViewController {
         let nc = UINavigationController(rootViewController: controller)
         present(nc, animated: true, completion: nil)
     }
-    
-    /*
-    // TODO: !! Problems when pushing..abruptly shifts on an odd way...need to investigate
-    // used to set titleView in landscape/portrait
-    override func viewWillLayoutSubviews() {
-        
-        // detect orientation changes. Set titleView to correct size
-        let orientation = UIDevice.current.orientation
-        var frame: CGRect = CGRect.zero
-        var image: UIImage!
-        if orientation == .portrait {
-            frame = CGRect(x: 0, y: 0, width: 200, height: 35)
-            image = UIImage(named: "MemeTitleViewPortrait")
-        }
-        else {
-            frame = CGRect(x: 0, y: 0, width: 200, height: 25)
-            image = UIImage(named: "MemeTitleViewLandscape")
-        }
-        
-        // titleView
-        let imageView = UIImageView(frame: frame)
-        imageView.image = image
-        navigationItem.titleView = imageView
-    }
-    */
 }
 
 // tableView data source functions
@@ -126,7 +100,6 @@ extension SharedMemesTableViewController {
         let meme = appDelegate.memeStore[indexPath.row]
         let controller = storyboard?.instantiateViewController(withIdentifier: "MemeEditorViewController") as! MemeEditorViewController
         controller.meme = meme
-        navigationItem.titleView = nil
         tabBarController?.tabBar.isHidden = true
         navigationController?.pushViewController(controller, animated: true)
     }
@@ -154,6 +127,32 @@ extension SharedMemesTableViewController {
         // swap Memes
         let meme = appDelegate.memeStore.remove(at: sourceIndexPath.row)
         appDelegate.memeStore.insert(meme, at: destinationIndexPath.row)
+    }
+}
+
+// handle misc view objects
+extension SharedMemesTableViewController {
+    
+    // retieve titleView for device orientation
+    func titleViewForOrientation(_ orientation: UIDeviceOrientation) -> UIView {
+        
+        // detect orientation changes. Set titleView to correct size
+        var frame: CGRect = CGRect.zero
+        var image: UIImage!
+        if (orientation == .landscapeLeft) || (orientation == .landscapeRight) {
+            frame = CGRect(x: 0, y: 0, width: 200, height: 25)
+            image = UIImage(named: "MemeTitleViewLandscape")
+        }
+        else {
+            frame = CGRect(x: 0, y: 0, width: 200, height: 35)
+            image = UIImage(named: "MemeTitleViewPortrait")
+        }
+        
+        // titleView
+        let imageView = UIImageView(frame: frame)
+        imageView.image = image
+        
+        return imageView
     }
 }
 

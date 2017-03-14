@@ -103,7 +103,7 @@ class MemeEditorViewController: UIViewController {
         super.viewDidLoad()
         
         // view title
-        title = "MemeMe!"
+        navigationItem.titleView = titleViewForOrientation(UIDevice.current.orientation)
 
         // trash bbi. Used to delete pic or delete Meme
         trashBbi = UIBarButtonItem(barButtonSystemItem: .trash,
@@ -167,31 +167,6 @@ class MemeEditorViewController: UIViewController {
             imageView.image = meme.memedImage
         }
     }
-    
-    /*
-     // TODO: !! Problems when pushing..abruptly shifts on an odd way...need to investigate
-     // used to set titleView in landscape/portrait
-     override func viewWillLayoutSubviews() {
-     
-     // detect orientation changes. Set titleView to correct size
-     let orientation = UIDevice.current.orientation
-     var frame: CGRect = CGRect.zero
-     var image: UIImage!
-     if orientation == .portrait {
-     frame = CGRect(x: 0, y: 0, width: 200, height: 35)
-     image = UIImage(named: "MemeTitleViewPortrait")
-     }
-     else {
-     frame = CGRect(x: 0, y: 0, width: 200, height: 25)
-     image = UIImage(named: "MemeTitleViewLandscape")
-     }
-     
-     // titleView
-     let imageView = UIImageView(frame: frame)
-     imageView.image = image
-     navigationItem.titleView = imageView
-     }
-     */
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -520,5 +495,31 @@ extension MemeEditorViewController {
         let userInfo = notification.userInfo
         let keyboardFrame = userInfo?[UIKeyboardFrameEndUserInfoKey] as! NSValue
         return keyboardFrame.cgRectValue.size.height - bottomTextField.frame.size.height / 2.0
+    }
+}
+
+// handle misc view objects
+extension MemeEditorViewController {
+    
+    // retieve titleView for device orientation
+    func titleViewForOrientation(_ orientation: UIDeviceOrientation) -> UIView {
+        
+        // detect orientation changes. Set titleView to correct size
+        var frame: CGRect = CGRect.zero
+        var image: UIImage!
+        if (orientation == .landscapeLeft) || (orientation == .landscapeRight) {
+            frame = CGRect(x: 0, y: 0, width: 200, height: 25)
+            image = UIImage(named: "MemeTitleViewLandscape")
+        }
+        else {
+            frame = CGRect(x: 0, y: 0, width: 200, height: 35)
+            image = UIImage(named: "MemeTitleViewPortrait")
+        }
+        
+        // titleView
+        let imageView = UIImageView(frame: frame)
+        imageView.image = image
+        
+        return imageView
     }
 }
