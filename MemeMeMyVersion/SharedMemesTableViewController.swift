@@ -28,6 +28,8 @@ class SharedMemesTableViewController: UITableViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
                                                             target: self,
                                                             action: #selector(createNewMeme))
+        
+        navigationItem.leftBarButtonItem = editButtonItem
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -39,12 +41,19 @@ class SharedMemesTableViewController: UITableViewController {
         
         //navigationItem.leftBarButtonItem = editButtonItem
         editButtonItem.isEnabled = appDelegate.memeStore.count > 0
+        
+        // observer for orientation change...used to update titleView with correct image size
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(orientationChanged),
+                                               name: .UIDeviceOrientationDidChange,
+                                               object: nil)
     }
     
-    override func setEditing(_ editing: Bool, animated: Bool) {
-        super.setEditing(editing, animated: animated)
+    // update titleView image
+    func orientationChanged() {
+        navigationItem.titleView = titleViewForOrientation(UIDevice.current.orientation)
     }
-
+    
     // create a new Meme
     func createNewMeme() {
     
@@ -130,7 +139,7 @@ extension SharedMemesTableViewController {
     }
 }
 
-// handle misc view objects
+// misc helper functions
 extension SharedMemesTableViewController {
     
     // retieve titleView for device orientation
@@ -154,5 +163,7 @@ extension SharedMemesTableViewController {
         
         return imageView
     }
+    
+    
 }
 

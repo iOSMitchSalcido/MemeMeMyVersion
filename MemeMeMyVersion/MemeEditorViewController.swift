@@ -174,6 +174,17 @@ class MemeEditorViewController: UIViewController {
         // start keyboard notification and configure bbi enable states
         beginKeyboardNotifications()
         configureMemeView()
+        
+        // observer for orientation change...used to update titleView with correct image size
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(orientationChanged),
+                                               name: .UIDeviceOrientationDidChange,
+                                               object: nil)
+    }
+    
+    // update titleView image
+    func orientationChanged() {
+        navigationItem.titleView = titleViewForOrientation(UIDevice.current.orientation)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -498,7 +509,7 @@ extension MemeEditorViewController {
     }
 }
 
-// handle misc view objects
+// misc helper functions
 extension MemeEditorViewController {
     
     // retieve titleView for device orientation
