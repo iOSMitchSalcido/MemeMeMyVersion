@@ -18,6 +18,9 @@ class SharedMemesTableViewController: UITableViewController {
     // ref to app delegate..Meme store is defined in appDelegate
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
+    // ref to newMeme bbi
+    var newMemeBbi: UIBarButtonItem!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -25,11 +28,12 @@ class SharedMemesTableViewController: UITableViewController {
         navigationItem.titleView = titleViewForOrientation(UIDevice.current.orientation)
         
         // "+" button to create new Meme
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
-                                                            target: self,
-                                                            action: #selector(createNewMeme))
+        newMemeBbi = UIBarButtonItem(barButtonSystemItem: .add,
+                                     target: self,
+                                     action: #selector(createNewMeme))
         
         navigationItem.leftBarButtonItem = editButtonItem
+        navigationItem.rightBarButtonItem = newMemeBbi
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -47,6 +51,13 @@ class SharedMemesTableViewController: UITableViewController {
                                                selector: #selector(orientationChanged),
                                                name: .UIDeviceOrientationDidChange,
                                                object: nil)
+    }
+    
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        
+        // disable newMemeBbi when editing
+        newMemeBbi.isEnabled = !editing
     }
     
     // update titleView image
