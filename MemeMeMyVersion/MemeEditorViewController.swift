@@ -33,6 +33,7 @@ class MemeEditorViewController: UIViewController {
     var fontsBbi: UIBarButtonItem!
     var shareBbi: UIBarButtonItem!
     var trashBbi: UIBarButtonItem!
+    var cancelBbi: UIBarButtonItem!
     
     // default image..ref maintained to steer view configuration
     var defaultImage: UIImage?
@@ -145,9 +146,10 @@ class MemeEditorViewController: UIViewController {
             navigationItem.rightBarButtonItem = shareBbi
             
             // cancel bbi
-            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
-                                                                target: self,
-                                                                action: #selector(dismissVC))
+            cancelBbi = UIBarButtonItem(barButtonSystemItem: .cancel,
+                                        target: self,
+                                        action: #selector(dismissVC))
+            navigationItem.leftBarButtonItem = cancelBbi
             
             // get default image
             defaultImage = UIImage(named: "CreateMeme")
@@ -445,7 +447,20 @@ extension MemeEditorViewController: UITextFieldDelegate {
     // done editing
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
+        
+        // enable cancelBbi and shareBbi when not editing textFields
+        cancelBbi.isEnabled = true
+        shareBbi.isEnabled = true
+        
         return true
+    }
+    
+    // begin editing
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        
+        // disable cancelBbi and shareBbi when editing textFields
+        cancelBbi.isEnabled = false
+        shareBbi.isEnabled = false
     }
 }
 
@@ -505,7 +520,7 @@ extension MemeEditorViewController {
         // get keyboard height, return height less half textField height..seems like asthetic value
         let userInfo = notification.userInfo
         let keyboardFrame = userInfo?[UIKeyboardFrameEndUserInfoKey] as! NSValue
-        return keyboardFrame.cgRectValue.size.height - bottomTextField.frame.size.height / 2.0
+        return keyboardFrame.cgRectValue.size.height - bottomTextField.frame.size.height / 3.0
     }
 }
 
@@ -515,15 +530,12 @@ extension MemeEditorViewController {
     // retieve titleView for device orientation
     func titleViewForOrientation(_ orientation: UIDeviceOrientation) -> UIView {
         
-        print("titleViewForOrientation")
-        
         // detect orientation changes. Set titleView to correct size
         var frame: CGRect = CGRect.zero
         var image: UIImage!
         if (orientation == .landscapeLeft) || (orientation == .landscapeRight) {
             frame = CGRect(x: 0, y: 0, width: 200, height: 25)
             
-            print("landscape")
             if meme == nil {
                 image = UIImage(named: "NewTitleViewLandscape")
             }
@@ -534,13 +546,10 @@ extension MemeEditorViewController {
         else {
             frame = CGRect(x: 0, y: 0, width: 200, height: 35)
             
-            print("portrait")
             if meme == nil {
-                print("nil meme")
                 image = UIImage(named: "NewTitleViewPortrait")
             }
             else {
-                print("non-nil meme")
                 image = UIImage(named: "MemeTitleViewPortrait")
             }
         }
