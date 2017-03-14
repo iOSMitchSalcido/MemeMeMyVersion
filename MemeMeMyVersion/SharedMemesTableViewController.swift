@@ -161,11 +161,11 @@ extension SharedMemesTableViewController {
         var image: UIImage!
         if (orientation == .landscapeLeft) || (orientation == .landscapeRight) {
             frame = CGRect(x: 0, y: 0, width: 200, height: 25)
-            image = UIImage(named: "MemeTitleViewLandscape")
+            image = UIImage(named: "SentTitleViewLandscape")
         }
         else {
             frame = CGRect(x: 0, y: 0, width: 200, height: 35)
-            image = UIImage(named: "MemeTitleViewPortrait")
+            image = UIImage(named: "SentTitleViewPortrait")
         }
         
         // titleView
