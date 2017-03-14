@@ -11,64 +11,36 @@ import UIKit
 private let reuseIdentifier = "Cell"
 
 class SharedMemesCollectionViewController: UICollectionViewController {
-
-    // for debug.. create five memes and put in table
-    lazy var testMemes: [Meme]  = {
-        
-        var memes = [Meme]()
-        
-        for i in 0..<5 {
-            let originalImage = UIImage(named: "CreateMeme")
-            let memedImage = UIImage(named: "CreateMeme")
-            let attribute = [NSStrokeColorAttributeName: UIColor.white,
-                             NSStrokeWidthAttributeName: NSNumber(value: 0.0),
-                             NSForegroundColorAttributeName: UIColor.white,
-                             NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!]
-            let meme = Meme(topText: "Meme #\(i)",
-                bottomText: "I'm Meme #\(i) in the list of memes",
-                textAttributes: attribute,
-                originalImage: originalImage!,
-                memedImage: memedImage!)
-            memes.append(meme)
-        }
-        
-        return memes
-    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // view title
+        navigationItem.titleView = titleViewForOrientation(UIDevice.current.orientation)
+        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
         // Register cell classes
         self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
-        // Do any additional setup after loading the view.
-    }
-    
-    // used to set titleView in landscape/portrait
-    override func viewWillLayoutSubviews() {
-        
-        // detect orientation changes. Set titleView to correct size
-        let orientation = UIDevice.current.orientation
-        var frame: CGRect = CGRect.zero
-        var image: UIImage!
-        if orientation == .portrait {
-            frame = CGRect(x: 0, y: 0, width: 200, height: 35)
-            image = UIImage(named: "MemeTitleViewPortrait")
-        }
-        else {
-            frame = CGRect(x: 0, y: 0, width: 200, height: 25)
-            image = UIImage(named: "MemeTitleViewLandscape")
-        }
-        
-        // titleView
-        let imageView = UIImageView(frame: frame)
-        imageView.image = image
-        navigationItem.titleView = imageView
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // observer for orientation change...used to update titleView with correct image size
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(orientationChanged),
+                                               name: .UIDeviceOrientationDidChange,
+                                               object: nil)
+    }
+    
+    // update titleView image
+    func orientationChanged() {
+        navigationItem.titleView = titleViewForOrientation(UIDevice.current.orientation)
+    }
+    
     // MARK: UICollectionViewDataSource
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -121,4 +93,31 @@ class SharedMemesCollectionViewController: UICollectionViewController {
     }
     */
 
+}
+
+
+// misc helper functions
+extension SharedMemesCollectionViewController {
+    
+    // retieve titleView for device orientation
+    func titleViewForOrientation(_ orientation: UIDeviceOrientation) -> UIView {
+        
+        // detect orientation changes. Set titleView to correct size
+        var frame: CGRect = CGRect.zero
+        var image: UIImage!
+        if (orientation == .landscapeLeft) || (orientation == .landscapeRight) {
+            frame = CGRect(x: 0, y: 0, width: 200, height: 25)
+            image = UIImage(named: "SentTitleViewLandscape")
+        }
+        else {
+            frame = CGRect(x: 0, y: 0, width: 200, height: 35)
+            image = UIImage(named: "SentTitleViewPortrait")
+        }
+        
+        // titleView
+        let imageView = UIImageView(frame: frame)
+        imageView.image = image
+        
+        return imageView
+    }
 }

@@ -101,7 +101,7 @@
         <scene sceneID="k2B-0w-aog">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="nB1-cW-e4x" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Table" id="UXu-tz-0Ls"/>
+                    <tabBarItem key="tabBarItem" title="Table" image="table" id="UXu-tz-0Ls"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="SR2-8q-MKM">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -165,7 +165,7 @@
         <scene sceneID="tdx-TW-rk2">
             <objects>
                 <collectionViewController storyboardIdentifier="SharedMemesCollectionViewController" id="VWj-V0-Lph" customClass="SharedMemesCollectionViewController" customModule="MemeMeMyVersion" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="Kek-gQ-IVw">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="Kek-gQ-IVw">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -200,7 +200,7 @@
         <scene sceneID="uvl-ER-Jpp">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="PqG-uu-ix1" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Collection" id="tOH-zv-T7d"/>
+                    <tabBarItem key="tabBarItem" title="Collection" image="collection" id="tOH-zv-T7d"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="alb-Sr-yEM">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -218,5 +218,7 @@
     </scenes>
     <resources>
         <image name="CreateMeme" width="280" height="280"/>
+        <image name="collection" width="29" height="30"/>
+        <image name="table" width="30" height="30"/>
     </resources>
 </document>

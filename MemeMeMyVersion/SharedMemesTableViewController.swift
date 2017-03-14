@@ -174,7 +174,5 @@ extension SharedMemesTableViewController {
         
         return imageView
     }
-    
-    
 }
 
