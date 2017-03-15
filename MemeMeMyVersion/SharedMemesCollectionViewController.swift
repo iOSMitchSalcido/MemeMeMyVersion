@@ -8,12 +8,13 @@
 
 import UIKit
 
-//private let reuseIdentifier = "MemeCollectionViewCell"
-
 class SharedMemesCollectionViewController: UICollectionViewController {
     
     // ref to app delegate..Meme store is defined in appDelegate
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    
+    // ref to newMeme bbi
+    var newMemeBbi: UIBarButtonItem!
     
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     override func viewDidLoad() {
@@ -21,6 +22,13 @@ class SharedMemesCollectionViewController: UICollectionViewController {
 
         // view title
         navigationItem.titleView = titleViewForOrientation(UIDevice.current.orientation)
+        
+        // "+" button to create new Meme
+        newMemeBbi = UIBarButtonItem(barButtonSystemItem: .add,
+                                     target: self,
+                                     action: #selector(createNewMeme))
+        
+        navigationItem.rightBarButtonItem = newMemeBbi
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -51,25 +59,41 @@ class SharedMemesCollectionViewController: UICollectionViewController {
         navigationItem.titleView = titleViewForOrientation(UIDevice.current.orientation)
     }
     
-    // MARK: UICollectionViewDataSource
+    // create a new Meme
+    func createNewMeme() {
+        
+        // invoke MemeEditorVC in a navController, present
+        let controller = storyboard?.instantiateViewController(withIdentifier: "MemeEditorViewController") as! MemeEditorViewController
+        let nc = UINavigationController(rootViewController: controller)
+        present(nc, animated: true, completion: nil)
+    }
+}
+
+// collectionView data source functions
+extension SharedMemesCollectionViewController {
+ 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return appDelegate.memeStore.count
     }
-
+    
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MemeCollectionViewCellID", for: indexPath) as! MemeCollectionViewCell
-    
+        
         // Configure the cell
         let meme = appDelegate.memeStore[indexPath.row]
         cell.imageView.image = meme.memedImage
         
         return cell
     }
+}
 
+// collectionView delegate functions
+extension SharedMemesCollectionViewController {
+    
     // MARK: UICollectionViewDelegate
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-
+        
         // retrieve meme. Invoke MemeEditorVC, set meme, push...need to hide tabBar...
         let meme = appDelegate.memeStore[indexPath.row]
         let controller = storyboard?.instantiateViewController(withIdentifier: "MemeEditorViewController") as! MemeEditorViewController
@@ -78,7 +102,6 @@ class SharedMemesCollectionViewController: UICollectionViewController {
         navigationController?.pushViewController(controller, animated: true)
     }
 }
-
 
 // misc helper functions
 extension SharedMemesCollectionViewController {
