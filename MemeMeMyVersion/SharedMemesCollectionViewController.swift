@@ -43,14 +43,7 @@ class SharedMemesCollectionViewController: UICollectionViewController {
         
         tabBarController?.tabBar.isHidden = false
         collectionView?.reloadData()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        if isEditing {
-            setEditing(false, animated: false)
-        }
+        editButtonItem.isEnabled = appDelegate.memeStore.count > 0
     }
     
     override func viewWillLayoutSubviews() {
@@ -67,9 +60,13 @@ class SharedMemesCollectionViewController: UICollectionViewController {
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
     
+        for item in (tabBarController?.tabBar.items)! {
+            item.isEnabled = !editing
+        }
+        
         if editing {
             newMemeBbi.isEnabled = false
-            collectionView?.backgroundColor = UIColor.darkGray
+            collectionView?.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0)
         }
         else {
             newMemeBbi.isEnabled = true
@@ -115,6 +112,11 @@ extension SharedMemesCollectionViewController {
 extension SharedMemesCollectionViewController {
     
     // MARK: UICollectionViewDelegate
+    
+    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        print("shouldSelect")
+        return true
+    }
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         if isEditing {
@@ -127,6 +129,15 @@ extension SharedMemesCollectionViewController {
         controller.meme = meme
         tabBarController?.tabBar.isHidden = true
         navigationController?.pushViewController(controller, animated: true)
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+        print("shouldDeselect")
+        return true
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        print("didDeselect")
     }
 }
 

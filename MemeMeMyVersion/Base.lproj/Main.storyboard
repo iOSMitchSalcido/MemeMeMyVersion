@@ -183,16 +183,21 @@
                                     <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CreateMeme" translatesAutoresizingMaskIntoConstraints="NO" id="Zlm-ge-Y2L">
-                                            <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
-                                        </imageView>
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="ycn-tM-6JO">
+                                            <rect key="frame" x="0.0" y="0.0" width="140" height="140"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CreateMeme" translatesAutoresizingMaskIntoConstraints="NO" id="Zlm-ge-Y2L">
+                                                    <rect key="frame" x="0.0" y="0.0" width="90" height="90"/>
+                                                </imageView>
+                                            </subviews>
+                                        </stackView>
                                     </subviews>
                                 </view>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="Zlm-ge-Y2L" secondAttribute="trailing" id="1bU-hY-4cH"/>
-                                    <constraint firstItem="Zlm-ge-Y2L" firstAttribute="top" secondItem="QdC-cV-2Bq" secondAttribute="top" id="BdM-FI-xvl"/>
-                                    <constraint firstAttribute="bottom" secondItem="Zlm-ge-Y2L" secondAttribute="bottom" id="bbT-Uf-sFL"/>
-                                    <constraint firstItem="Zlm-ge-Y2L" firstAttribute="leading" secondItem="QdC-cV-2Bq" secondAttribute="leading" id="pUc-Pf-ZWJ"/>
+                                    <constraint firstItem="ycn-tM-6JO" firstAttribute="top" secondItem="QdC-cV-2Bq" secondAttribute="top" constant="5" id="3uj-0x-t3U"/>
+                                    <constraint firstAttribute="bottom" secondItem="ycn-tM-6JO" secondAttribute="bottom" constant="5" id="9od-eD-ZWA"/>
+                                    <constraint firstAttribute="trailing" secondItem="ycn-tM-6JO" secondAttribute="trailing" constant="5" id="DzY-IX-SXT"/>
+                                    <constraint firstItem="ycn-tM-6JO" firstAttribute="leading" secondItem="QdC-cV-2Bq" secondAttribute="leading" constant="5" id="Nkg-pt-5cx"/>
                                 </constraints>
                                 <connections>
                                     <outlet property="imageView" destination="Zlm-ge-Y2L" id="tsV-gi-qS6"/>

@@ -52,19 +52,16 @@ class SharedMemesTableViewController: UITableViewController {
                                                name: .UIDeviceOrientationDidChange,
                                                object: nil)
     }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        if isEditing {
-            setEditing(false, animated: false)
-        }
-    }
+
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         
         // disable newMemeBbi when editing
         newMemeBbi.isEnabled = !editing
+        
+        for item in (tabBarController?.tabBar.items)! {
+            item.isEnabled = !editing
+        }
     }
     
     // update titleView image
