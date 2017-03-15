@@ -53,6 +53,13 @@ class SharedMemesTableViewController: UITableViewController {
                                                object: nil)
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        if isEditing {
+            setEditing(false, animated: false)
+        }
+    }
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         
