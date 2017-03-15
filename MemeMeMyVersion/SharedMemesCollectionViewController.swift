@@ -29,6 +29,7 @@ class SharedMemesCollectionViewController: UICollectionViewController {
                                      action: #selector(createNewMeme))
         
         navigationItem.rightBarButtonItem = newMemeBbi
+        navigationItem.leftBarButtonItem = editButtonItem
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -44,14 +45,36 @@ class SharedMemesCollectionViewController: UICollectionViewController {
         collectionView?.reloadData()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        if isEditing {
+            setEditing(false, animated: false)
+        }
+    }
+    
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
     
+        // retrieve flowLayout info...want to maintain same # of cells regardless of orientation
         let spacing: CGFloat = 2.0
         let dim = (view.frame.width - 2.0 * spacing) / 3.0
         flowLayout.minimumInteritemSpacing = spacing
         flowLayout.minimumLineSpacing = spacing
         flowLayout.itemSize = CGSize(width: dim, height: dim)
+    }
+    
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+    
+        if editing {
+            newMemeBbi.isEnabled = false
+            collectionView?.backgroundColor = UIColor.darkGray
+        }
+        else {
+            newMemeBbi.isEnabled = true
+            collectionView?.backgroundColor = UIColor.black
+        }
     }
     
     // update titleView image
@@ -93,6 +116,10 @@ extension SharedMemesCollectionViewController {
     
     // MARK: UICollectionViewDelegate
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        if isEditing {
+            return
+        }
         
         // retrieve meme. Invoke MemeEditorVC, set meme, push...need to hide tabBar...
         let meme = appDelegate.memeStore[indexPath.row]
