@@ -16,6 +16,9 @@ class SharedMemesCollectionViewController: UICollectionViewController {
     // ref to newMeme bbi
     var newMemeBbi: UIBarButtonItem!
     
+    // ref to trash..for selecting and deleting Memes
+    var trashBbi: UIBarButtonItem!
+    
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +33,11 @@ class SharedMemesCollectionViewController: UICollectionViewController {
         
         navigationItem.rightBarButtonItem = newMemeBbi
         navigationItem.leftBarButtonItem = editButtonItem
+        
+        // trashBbi
+        trashBbi = UIBarButtonItem(barButtonSystemItem: .trash,
+                                   target: self,
+                                   action: #selector(trashBbiPressed(_:)))
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -65,11 +73,16 @@ class SharedMemesCollectionViewController: UICollectionViewController {
         }
         
         if editing {
-            newMemeBbi.isEnabled = false
+            
+            // editing. Place disabled trashBbi on right navbar
+            trashBbi.isEnabled = false
+            navigationItem.setRightBarButton(trashBbi, animated: true)
             collectionView?.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0)
         }
         else {
-            newMemeBbi.isEnabled = true
+            
+            // done editing...Place newMemeBbi on right navbar
+            navigationItem.setRightBarButton(newMemeBbi, animated: true)
             collectionView?.backgroundColor = UIColor.black
         }
     }
@@ -86,6 +99,11 @@ class SharedMemesCollectionViewController: UICollectionViewController {
         let controller = storyboard?.instantiateViewController(withIdentifier: "MemeEditorViewController") as! MemeEditorViewController
         let nc = UINavigationController(rootViewController: controller)
         present(nc, animated: true, completion: nil)
+    }
+    
+    // trashBbiPressed
+    func trashBbiPressed(_ sender: UIBarButtonItem) {
+        
     }
 }
 
@@ -120,6 +138,7 @@ extension SharedMemesCollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         if isEditing {
+            trashBbi.isEnabled = true
             return
         }
         
