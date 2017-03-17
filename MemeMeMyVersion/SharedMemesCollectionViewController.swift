@@ -150,7 +150,7 @@ extension SharedMemesCollectionViewController {
         // detect orientation changes. Set titleView to correct size
         var frame: CGRect = CGRect.zero
         var image: UIImage!
-        if (orientation == .landscapeLeft) || (orientation == .landscapeRight) {
+        if (view.frame.size.width > view.frame.size.height) {
             frame = CGRect(x: 0, y: 0, width: 200, height: 25)
             image = UIImage(named: "SentTitleViewLandscape")
         }
