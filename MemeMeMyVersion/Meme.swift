@@ -16,12 +16,14 @@ import UIKit
 
 class Meme: NSObject {
     
+    // text/image properties
     let topText: String
     let bottomText: String
     let  textAttributes: [String: AnyObject]
     let originalImage: UIImage
     let memedImage: UIImage
     
+    // init
     init(topText: String, bottomText: String, textAttributes: [String: AnyObject], originalImage: UIImage, memedImage: UIImage) {
         self.topText = topText
         self.bottomText = bottomText
@@ -31,7 +33,7 @@ class Meme: NSObject {
     }
 }
 
-// extension. conform to ActivityItem data source
+// extension. Conform to ActivityItem data source
 extension Meme: UIActivityItemSource {
     
     func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
