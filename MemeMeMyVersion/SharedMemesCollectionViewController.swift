@@ -113,6 +113,25 @@ class SharedMemesCollectionViewController: UICollectionViewController {
     
     // trashBbiPressed
     func trashBbiPressed(_ sender: UIBarButtonItem) {
+        
+        var indexPaths = collectionView?.indexPathsForSelectedItems
+        indexPaths?.sort {
+            (index1, index2) -> Bool in
+            return index1.row > index2.row
+        }
+        
+        for indexPath in indexPaths! {
+            appDelegate.memeStore.remove(at: indexPath.row)
+        }
+        
+        collectionView?.deleteItems(at: indexPaths!)
+        
+        trashBbi.isEnabled = false
+        
+        if appDelegate.memeStore.count == 0 {
+            setEditing(false, animated: true)
+            editButtonItem.isEnabled = false
+        }
     }
 }
 
