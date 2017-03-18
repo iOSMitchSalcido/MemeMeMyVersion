@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                              NSStrokeWidthAttributeName: NSNumber(value: 0.0),
                              NSForegroundColorAttributeName: UIColor.white,
                              NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!]
-            let meme = Meme(topText: "Meme #\(i)",
+            let meme = Meme(topText: "Debug Meme #\(i)",
                 bottomText: "This is Meme number \(i)",
                 textAttributes: attribute,
                 originalImage: originalImage!,

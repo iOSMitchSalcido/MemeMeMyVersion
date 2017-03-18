@@ -5,6 +5,11 @@
 //  Created by Online Training on 3/13/17.
 //  Copyright © 2017 Mitch Salcido. All rights reserved.
 //
+/*
+ About SharedMemesCollectionViewController.swift
+ CollectionView to handle presentation of shared Meme's. Provides functionality for presenting MemeEditorVC, Deleting
+ and moving Memes in CV
+ */
 
 import UIKit
 
@@ -19,12 +24,14 @@ class SharedMemesCollectionViewController: UICollectionViewController {
     // ref to trash..for selecting and deleting Memes
     var trashBbi: UIBarButtonItem!
     
+    // ref to flowLayout
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // view title
-        navigationItem.titleView = titleViewForOrientation(UIDevice.current.orientation)
+        navigationItem.titleView = titleViewForOrientation()
         
         // "+" button to create new Meme
         newMemeBbi = UIBarButtonItem(barButtonSystemItem: .add,
@@ -50,9 +57,11 @@ class SharedMemesCollectionViewController: UICollectionViewController {
                                                selector: #selector(orientationChanged),
                                                name: .UIDeviceOrientationDidChange,
                                                object: nil)
-        
+        // show tabBar, reload cv data
         tabBarController?.tabBar.isHidden = false
         collectionView?.reloadData()
+        
+        // edit/done enable state...enable is any Memes
         editButtonItem.isEnabled = appDelegate.memeStore.count > 0
     }
     
@@ -70,23 +79,25 @@ class SharedMemesCollectionViewController: UICollectionViewController {
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
     
+        // set tabBar items enable state to ! editing
         for item in (tabBarController?.tabBar.items)! {
             item.isEnabled = !editing
         }
         
         if editing {
             
-            // editing. Place disabled trashBbi on right navbar
+            // editing. Place disabled trashBbi on right navbar, tint view a little to indicate editing state
             trashBbi.isEnabled = false
             navigationItem.setRightBarButton(trashBbi, animated: true)
             collectionView?.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0)
         }
         else {
             
-            // done editing...Place newMemeBbi on right navbar
+            // done editing...Place newMemeBbi on right navbar, restore background color
             navigationItem.setRightBarButton(newMemeBbi, animated: true)
             collectionView?.backgroundColor = UIColor.black
             
+            // deselect and currently selected cells
             let indexPaths = collectionView?.indexPathsForSelectedItems
             for indexPath in indexPaths! {
                 collectionView?.deselectItem(at: indexPath, animated: false)
@@ -99,7 +110,7 @@ class SharedMemesCollectionViewController: UICollectionViewController {
     
     // update titleView image
     func orientationChanged() {
-        navigationItem.titleView = titleViewForOrientation(UIDevice.current.orientation)
+        navigationItem.titleView = titleViewForOrientation()
     }
     
     // create a new Meme
@@ -114,20 +125,26 @@ class SharedMemesCollectionViewController: UICollectionViewController {
     // trashBbiPressed
     func trashBbiPressed(_ sender: UIBarButtonItem) {
         
+        // get indexPaths os selected cells. Reverse sort according to row property..needed when iterating/deleting
+        // memes from array
         var indexPaths = collectionView?.indexPathsForSelectedItems
         indexPaths?.sort {
             (index1, index2) -> Bool in
             return index1.row > index2.row
         }
         
+        // delete meme(s) from store
         for indexPath in indexPaths! {
             appDelegate.memeStore.remove(at: indexPath.row)
         }
         
+        // delete cell(s)
         collectionView?.deleteItems(at: indexPaths!)
         
+        // disable trashBbi..cells no longer selected
         trashBbi.isEnabled = false
         
+        // remove from editing state if no Memes
         if appDelegate.memeStore.count == 0 {
             setEditing(false, animated: true)
             editButtonItem.isEnabled = false
@@ -139,6 +156,8 @@ class SharedMemesCollectionViewController: UICollectionViewController {
 extension SharedMemesCollectionViewController {
  
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
+        // count of items in cv
         return appDelegate.memeStore.count
     }
     
@@ -150,6 +169,7 @@ extension SharedMemesCollectionViewController {
         let meme = appDelegate.memeStore[indexPath.row]
         cell.imageView.image = meme.memedImage
         
+        // test cell selection to show selection "checkmark"
         if cell.isSelected {
             cell.selectedImageView.alpha = 1.0
         }
@@ -159,14 +179,23 @@ extension SharedMemesCollectionViewController {
         
         return cell
     }
+    
+    override func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
+        
+        // OK to reorder if editing and more than one cell
+        if (collectionView.visibleCells.count > 1) && isEditing {
+            return true
+        }
+        return false
+    }
 }
 
 // collectionView delegate functions
 extension SharedMemesCollectionViewController {
     
-    // MARK: UICollectionViewDelegate
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
+        // cell is now selected. Enable trash and show "checkmark"
         if isEditing {
             trashBbi.isEnabled = true
             let cell = collectionView.cellForItem(at: indexPath) as! MemeCollectionViewCell
@@ -184,6 +213,7 @@ extension SharedMemesCollectionViewController {
     
     override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         
+        // cell is now deleselected..hide "checkmark", and disable trash if no more selected cells
         if isEditing {
             let cell = collectionView.cellForItem(at: indexPath) as! MemeCollectionViewCell
             cell.showSelectionView(false)
@@ -192,13 +222,20 @@ extension SharedMemesCollectionViewController {
             return
         }
     }
+    
+    override func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        
+        // swap cells
+        let meme = appDelegate.memeStore.remove(at: sourceIndexPath.row)
+        appDelegate.memeStore.insert(meme, at: destinationIndexPath.row)
+    }
 }
 
 // misc helper functions
 extension SharedMemesCollectionViewController {
     
     // retieve titleView for device orientation
-    func titleViewForOrientation(_ orientation: UIDeviceOrientation) -> UIView {
+    func titleViewForOrientation() -> UIView {
         
         // detect orientation changes. Set titleView to correct size
         var frame: CGRect = CGRect.zero

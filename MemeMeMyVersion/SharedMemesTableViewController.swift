@@ -25,32 +25,33 @@ class SharedMemesTableViewController: UITableViewController {
         super.viewDidLoad()
         
         // view title
-        navigationItem.titleView = titleViewForOrientation(UIDevice.current.orientation)
+        navigationItem.titleView = titleViewForOrientation()
         
         // "+" button to create new Meme
         newMemeBbi = UIBarButtonItem(barButtonSystemItem: .add,
                                      target: self,
                                      action: #selector(createNewMeme))
-        
-        navigationItem.leftBarButtonItem = editButtonItem
         navigationItem.rightBarButtonItem = newMemeBbi
+
+        // edit bbi
+        navigationItem.leftBarButtonItem = editButtonItem
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        // show tabBar, reload table
-        tabBarController?.tabBar.isHidden = false
-        tableView.reloadData()
-        
-        //navigationItem.leftBarButtonItem = editButtonItem
-        editButtonItem.isEnabled = appDelegate.memeStore.count > 0
         
         // observer for orientation change...used to update titleView with correct image size
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(orientationChanged),
                                                name: .UIDeviceOrientationDidChange,
                                                object: nil)
+        
+        // show tabBar, reload table
+        tabBarController?.tabBar.isHidden = false
+        tableView.reloadData()
+
+        // edit/done enable state...enable is any Memes
+        editButtonItem.isEnabled = appDelegate.memeStore.count > 0
     }
 
     override func setEditing(_ editing: Bool, animated: Bool) {
@@ -59,6 +60,7 @@ class SharedMemesTableViewController: UITableViewController {
         // disable newMemeBbi when editing
         newMemeBbi.isEnabled = !editing
         
+        // set tabBar items to ! editing state
         for item in (tabBarController?.tabBar.items)! {
             item.isEnabled = !editing
         }
@@ -66,8 +68,7 @@ class SharedMemesTableViewController: UITableViewController {
     
     // update titleView image
     func orientationChanged() {
-        
-        navigationItem.titleView = titleViewForOrientation(UIDevice.current.orientation)
+        navigationItem.titleView = titleViewForOrientation()
     }
     
     // create a new Meme
@@ -101,16 +102,17 @@ extension SharedMemesTableViewController {
         return cell
     }
     
+    // OK to edit tv
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
     
+    // OK to reorder if more than one meme in tv
     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
         
         if appDelegate.memeStore.count > 1 {
             return true
         }
-        
         return false
     }
 }
@@ -159,7 +161,7 @@ extension SharedMemesTableViewController {
 extension SharedMemesTableViewController {
     
     // retieve titleView for device orientation
-    func titleViewForOrientation(_ orientation: UIDeviceOrientation) -> UIView {
+    func titleViewForOrientation() -> UIView {
         
         // detect orientation changes. Set titleView to correct size
         var frame: CGRect = CGRect.zero

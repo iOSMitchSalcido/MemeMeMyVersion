@@ -104,7 +104,7 @@ class MemeEditorViewController: UIViewController {
         super.viewDidLoad()
         
         // view title
-        navigationItem.titleView = titleViewForOrientation(UIDevice.current.orientation)
+        navigationItem.titleView = titleViewForOrientation()
 
         // trash bbi. Used to delete pic or delete Meme
         trashBbi = UIBarButtonItem(barButtonSystemItem: .trash,
@@ -114,7 +114,7 @@ class MemeEditorViewController: UIViewController {
         if meme == nil {
             /*
              nil meme
-             VC implements controls and present view to create and share meme
+             VC implements controls to create and share meme
              */
             
             // Config textFields, delegate, text, alignment
@@ -186,7 +186,7 @@ class MemeEditorViewController: UIViewController {
     
     // update titleView image
     func orientationChanged() {
-        navigationItem.titleView = titleViewForOrientation(UIDevice.current.orientation)
+        navigationItem.titleView = titleViewForOrientation()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -194,6 +194,11 @@ class MemeEditorViewController: UIViewController {
         
         // end keyboard notifications
         endKeyboardNotifications()
+        
+        // end orientation notifications
+        NotificationCenter.default.removeObserver(self,
+                                                  name: .UIDeviceOrientationDidChange,
+                                                  object: nil)
     }
     
     func configureMemeView() {
@@ -239,7 +244,7 @@ class MemeEditorViewController: UIViewController {
     func cameraBbiPressed(_ sender: UIBarButtonItem) {
         
         /*
-         Function to invoke imagePickerVC. tests availableSources array, and if more than one source
+         Function to invoke imagePickerVC. Tests availableSources array, and if more than one source
          type is available (camera + photo's library, for example) an alertVC (action) is presented
          with selection of sources. If only one source type is available, then simply invoke imagePickerVC
          using that source
@@ -322,6 +327,7 @@ class MemeEditorViewController: UIViewController {
             actionCompletion = {
                 (action) in
                 
+                // delete meme from store and pop VC
                 let index = self.appDelegate.memeStore.index(of: self.meme)
                 self.appDelegate.memeStore.remove(at: index!)
                 let _ = self.navigationController?.popViewController(animated: true)
@@ -528,7 +534,7 @@ extension MemeEditorViewController {
 extension MemeEditorViewController {
     
     // retieve titleView for device orientation
-    func titleViewForOrientation(_ orientation: UIDeviceOrientation) -> UIView {
+    func titleViewForOrientation() -> UIView {
         
         // detect orientation changes. Set titleView to correct size
         var frame: CGRect = CGRect.zero
