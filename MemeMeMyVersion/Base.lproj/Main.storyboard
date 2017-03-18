@@ -129,18 +129,18 @@
                                 <rect key="frame" x="0.0" y="28" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="TUb-KZ-i3G" id="NCc-y3-J8z">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.666666666666664"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="PTK-W2-UZu">
-                                            <rect key="frame" x="15" y="4" width="34" height="21"/>
+                                            <rect key="frame" x="15" y="5" width="33.333333333333336" height="20.333333333333332"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="mQt-Vw-i2X">
-                                            <rect key="frame" x="15" y="25" width="44" height="15"/>
+                                            <rect key="frame" x="14.999999999999996" y="25.333333333333332" width="43.666666666666664" height="14.333333333333334"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                             <nil key="textColor"/>
@@ -184,13 +184,17 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="ycn-tM-6JO">
-                                            <rect key="frame" x="0.0" y="0.0" width="140" height="140"/>
+                                            <rect key="frame" x="5" y="5" width="90" height="90"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CreateMeme" translatesAutoresizingMaskIntoConstraints="NO" id="Zlm-ge-Y2L">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CreateMeme" translatesAutoresizingMaskIntoConstraints="NO" id="Zlm-ge-Y2L">
                                                     <rect key="frame" x="0.0" y="0.0" width="90" height="90"/>
                                                 </imageView>
                                             </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                         </stackView>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CollectionCellSelectionCheckMark40pt" translatesAutoresizingMaskIntoConstraints="NO" id="x84-bX-Cjp">
+                                            <rect key="frame" x="40" y="40" width="40" height="40"/>
+                                        </imageView>
                                     </subviews>
                                 </view>
                                 <constraints>
@@ -198,9 +202,12 @@
                                     <constraint firstAttribute="bottom" secondItem="ycn-tM-6JO" secondAttribute="bottom" constant="5" id="9od-eD-ZWA"/>
                                     <constraint firstAttribute="trailing" secondItem="ycn-tM-6JO" secondAttribute="trailing" constant="5" id="DzY-IX-SXT"/>
                                     <constraint firstItem="ycn-tM-6JO" firstAttribute="leading" secondItem="QdC-cV-2Bq" secondAttribute="leading" constant="5" id="Nkg-pt-5cx"/>
+                                    <constraint firstAttribute="bottom" secondItem="x84-bX-Cjp" secondAttribute="bottom" constant="20" id="tE4-EB-q9o"/>
+                                    <constraint firstAttribute="trailing" secondItem="x84-bX-Cjp" secondAttribute="trailing" constant="20" id="uM8-RF-dYv"/>
                                 </constraints>
                                 <connections>
                                     <outlet property="imageView" destination="Zlm-ge-Y2L" id="tsV-gi-qS6"/>
+                                    <outlet property="selectedImageView" destination="x84-bX-Cjp" id="Hbe-z3-8RY"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>
@@ -239,6 +246,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="CollectionCellSelectionCheckMark40pt" width="40" height="40"/>
         <image name="CreateMeme" width="280" height="280"/>
         <image name="collection" width="29" height="30"/>
         <image name="table" width="30" height="30"/>

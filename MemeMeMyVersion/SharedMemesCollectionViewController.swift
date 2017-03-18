@@ -38,6 +38,8 @@ class SharedMemesCollectionViewController: UICollectionViewController {
         trashBbi = UIBarButtonItem(barButtonSystemItem: .trash,
                                    target: self,
                                    action: #selector(trashBbiPressed(_:)))
+        
+        collectionView?.allowsMultipleSelection = true
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -84,6 +86,14 @@ class SharedMemesCollectionViewController: UICollectionViewController {
             // done editing...Place newMemeBbi on right navbar
             navigationItem.setRightBarButton(newMemeBbi, animated: true)
             collectionView?.backgroundColor = UIColor.black
+            
+            let indexPaths = collectionView?.indexPathsForSelectedItems
+            for indexPath in indexPaths! {
+                collectionView?.deselectItem(at: indexPath, animated: false)
+                let cell = collectionView?.cellForItem(at: indexPath) as! MemeCollectionViewCell
+                cell.selectedImageView.alpha = 0.0
+                cell.imageView.alpha = 1.0
+            }
         }
     }
     
@@ -103,7 +113,6 @@ class SharedMemesCollectionViewController: UICollectionViewController {
     
     // trashBbiPressed
     func trashBbiPressed(_ sender: UIBarButtonItem) {
-        
     }
 }
 
@@ -122,6 +131,13 @@ extension SharedMemesCollectionViewController {
         let meme = appDelegate.memeStore[indexPath.row]
         cell.imageView.image = meme.memedImage
         
+        if cell.isSelected {
+            cell.selectedImageView.alpha = 1.0
+        }
+        else {
+            cell.selectedImageView.alpha = 0.0
+        }
+        
         return cell
     }
 }
@@ -130,15 +146,12 @@ extension SharedMemesCollectionViewController {
 extension SharedMemesCollectionViewController {
     
     // MARK: UICollectionViewDelegate
-    
-    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        print("shouldSelect")
-        return true
-    }
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         if isEditing {
             trashBbi.isEnabled = true
+            let cell = collectionView.cellForItem(at: indexPath) as! MemeCollectionViewCell
+            cell.showSelectionView(true)
             return
         }
         
@@ -150,13 +163,15 @@ extension SharedMemesCollectionViewController {
         navigationController?.pushViewController(controller, animated: true)
     }
     
-    override func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
-        print("shouldDeselect")
-        return true
-    }
-    
     override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        print("didDeselect")
+        
+        if isEditing {
+            let cell = collectionView.cellForItem(at: indexPath) as! MemeCollectionViewCell
+            cell.showSelectionView(false)
+            
+            trashBbi.isEnabled = (collectionView.indexPathsForSelectedItems?.count)! > 0
+            return
+        }
     }
 }
 
