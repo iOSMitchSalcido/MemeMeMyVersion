@@ -533,25 +533,13 @@ extension MemeEditorViewController {
         // detect orientation changes. Set titleView to correct size
         var frame: CGRect = CGRect.zero
         var image: UIImage!
-        if (orientation == .landscapeLeft) || (orientation == .landscapeRight) {
+        if (UIScreen.main.bounds.size.width > UIScreen.main.bounds.size.height) {
             frame = CGRect(x: 0, y: 0, width: 200, height: 25)
-            
-            if meme == nil {
-                image = UIImage(named: "NewTitleViewLandscape")
-            }
-            else {
-                image = UIImage(named: "MemeTitleViewLandscape")
-            }
+            image = UIImage(named: "SentTitleViewLandscape")
         }
         else {
             frame = CGRect(x: 0, y: 0, width: 200, height: 35)
-            
-            if meme == nil {
-                image = UIImage(named: "NewTitleViewPortrait")
-            }
-            else {
-                image = UIImage(named: "MemeTitleViewPortrait")
-            }
+            image = UIImage(named: "SentTitleViewPortrait")
         }
         
         // titleView

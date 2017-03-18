@@ -164,13 +164,11 @@ extension SharedMemesTableViewController {
         // detect orientation changes. Set titleView to correct size
         var frame: CGRect = CGRect.zero
         var image: UIImage!
-        if (view.frame.size.width > view.frame.size.height) {
-            print("tvc: landscape")
+        if (UIScreen.main.bounds.size.width > UIScreen.main.bounds.size.height) {
             frame = CGRect(x: 0, y: 0, width: 200, height: 25)
             image = UIImage(named: "SentTitleViewLandscape")
         }
         else {
-            print("tvc: portrait")
             frame = CGRect(x: 0, y: 0, width: 200, height: 35)
             image = UIImage(named: "SentTitleViewPortrait")
         }
